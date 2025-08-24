@@ -1,151 +1,142 @@
 import React from 'react';
-import { TrendingUp, Users, Award, Play, Clock, Star } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
 
 const Home: React.FC = () => {
   const { isDark } = useTheme();
-  
-  const newsItems = [
+
+  const irfitCards = [
     {
-      id: 1,
-      title: 'Новая программа похудения "FIT TRANSFORMATION"',
-      excerpt: 'Эксклюзивная 30-дневная программа для быстрого и безопасного похудения',
-      image: 'https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg?auto=compress&cs=tinysrgb&w=400',
-      category: 'Программы',
-      readTime: '5 мин',
+      title: "Что?",
+      icon: "🎯",
+      content: "Институт восстановительного фитнеса IRFit — это первый в России институт, объединяющий физическую реабилитацию, двигательную терапию и современный фитнес в единую систему обучения. Мы готовим специалистов, способных не просто тренировать, но и восстанавливать клиентов, работая с любыми запросами и ограничениями по здоровью."
     },
     {
-      id: 2,
-      title: 'Топ-5 упражнений для укрепления кора',
-      excerpt: 'Эффективные упражнения для развития мышц пресса и спины',
-      image: 'https://images.pexels.com/photos/416717/pexels-photo-416717.jpeg?auto=compress&cs=tinysrgb&w=400',
-      category: 'Упражнения',
-      readTime: '7 мин',
+      title: "Для кого?",
+      icon: "👥",
+      content: "– Для новичков в тренинге — тех, кто хочет войти в востребованную нишу и построить карьеру в фитнесе, став универсальным экспертом с освоением всех направлений: групповых программ, тренажёрного зала и восстановительного фитнеса.\n\n– Для практикующих специалистов (фитнес-тренеров, реабилитологов, массажистов), готовых перейти на экспертный уровень в восстановительном фитнесе и увеличить доход."
     },
     {
-      id: 3,
-      title: 'Правильное питание после тренировки',
-      excerpt: 'Что есть после тренировки для максимального эффекта',
-      image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400',
-      category: 'Питание',
-      readTime: '4 мин',
+      title: "Зачем?",
+      icon: "💎",
+      content: "– Превратите свои навыки в эксклюзивную экспертизу и увеличьте средний чек в 2–3 раза.\n\n– Работайте с клиентами, которые ценят результат и готовы платить.\n\n– Освойте сложные медицинские случаи, недоступные 95% коллег.\n\n– Выходите на премиальный сегмент клиентов.\n\n– Диверсифицируйте источники дохода."
     },
+    {
+      title: "Как?",
+      icon: "🚀",
+      content: "Наш основной курс — «Эксперт восстановительного фитнеса». За 9 месяцев дистанционного обучения с использованием современных образовательных технологий вы получите комплексную подготовку под руководством ведущих экспертов и диплом."
+    }
   ];
 
-  const reviews = [
-    {
-      id: 1,
-      name: 'Анна Петрова',
-      rating: 5,
-      text: 'Отличное приложение! За 2 месяца сбросила 8 кг. Очень удобное расписание и мотивирующие тренеры.',
-      program: 'FIT TRANSFORMATION',
-    },
-    {
-      id: 2,
-      name: 'Дмитрий Сидоров',
-      rating: 5,
-      text: 'Профессиональный подход и отличные результаты. Набрал 5 кг мышечной массы за 3 месяца.',
-      program: 'MUSCLE BUILDING',
-    },
-  ];
-
-  const stats = [
-    { label: 'Активных пользователей', value: '25,000+', icon: Users },
-    { label: 'Программ тренировок', value: '150+', icon: TrendingUp },
-    { label: 'Сертифицированных\nтренеров', value: '50+', icon: Award },
-  ];
+  const irfitInfo = {
+    title: "Информация об IRFIT",
+    subtitle: "Что такое IRFit",
+    description: "С 2010 года наша команда формирует профессиональное фитнес-сообщество, объединяя знания, опыт и инновации. Начав с офлайн-обучения, мы подготовили более 2000 фитнес-тренеров, а 40 фитнес-клубов сотрудничают с нами и благодарны нам за квалифицированных специалистов.",
+    achievements: [
+      "14+ лет в фитнес-индустрии",
+      "2000+ выпускников, подтвердивших наш уровень",
+      "Федеральный опыт через масштабные конвенции",
+      "Фокус на восстановительный фитнес — тренд будущего",
+      "Практико-ориентированное обучение с топ-экспертами",
+      "Официальная лицензия на образовательную деятельность",
+      "Диплом государственного образца, приравненный к диплому ВУЗа"
+    ]
+  };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-6 space-y-6 md:max-w-4xl md:px-8 transition-colors duration-300">
-      {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-orange-500 to-purple-600 rounded-2xl p-6 text-white">
-        <h2 className="text-2xl font-bold mb-2">Добро пожаловать в IRFIT!</h2>
-        <p className="text-orange-100 mb-4">Твой путь к идеальной форме начинается здесь</p>
-        <button className="bg-white/20 backdrop-blur-sm text-white px-6 py-2 rounded-full font-medium transition-all hover:bg-white/30">
-          <Play className="w-4 h-4 inline mr-2" />
-          Начать тренировку
+    <div className="max-w-md mx-auto px-4 py-6 md:max-w-4xl">
+      {/* Header Section */}
+      <div className="text-center mb-8">
+        <div className="flex justify-center mb-6">
+          <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-[#94c356] shadow-2xl bg-white p-1">
+            <img 
+              src="/irfit-logo.png" 
+              alt="IRFit Logo" 
+              className="w-full h-full object-cover rounded-full"
+            />
+          </div>
+        </div>
+        <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-[#94c356] to-[#7ba045] bg-clip-text text-transparent">
+          Институт Восстановительного Фитнеса
+        </h1>
+        <p className={`text-lg md:text-xl ${
+          isDark ? 'text-gray-300' : 'text-gray-700'
+        }`}>
+          Готовим специалистов нового поколения в восстановительном фитнесе
+        </p>
+      </div>
+
+      {/* 4 Main Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        {irfitCards.map((card, index) => (
+          <div key={index} className={`p-6 rounded-xl shadow-lg transition-all duration-300 hover:scale-105 ${
+            isDark 
+              ? 'bg-gray-800 border border-gray-700 hover:border-[#94c356]' 
+              : 'bg-white border border-gray-200 hover:border-[#94c356] shadow-xl'
+          }`}>
+            <div className="flex items-center mb-4">
+              <span className="text-3xl mr-3">{card.icon}</span>
+              <h3 className="text-xl font-bold bg-gradient-to-r from-[#94c356] to-[#7ba045] bg-clip-text text-transparent">
+                {card.title}
+              </h3>
+            </div>
+            <p className={`leading-relaxed ${
+              isDark ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+              {card.content}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* IRFit Information */}
+      <div className={`p-8 rounded-2xl mb-8 ${
+        isDark 
+          ? 'bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700' 
+          : 'bg-gradient-to-r from-gray-50 to-white border border-gray-200'
+      }`}>
+        <h2 className="text-2xl md:text-3xl font-bold mb-4 text-center bg-gradient-to-r from-[#94c356] to-[#7ba045] bg-clip-text text-transparent">
+          {irfitInfo.title}
+        </h2>
+        <h3 className="text-xl font-semibold mb-4 text-center text-orange-600">
+          {irfitInfo.subtitle}
+        </h3>
+        <p className={`text-lg leading-relaxed mb-6 ${
+          isDark ? 'text-gray-300' : 'text-gray-700'
+        }`}>
+          {irfitInfo.description}
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {irfitInfo.achievements.map((achievement, index) => (
+            <div key={index} className="flex items-center space-x-3">
+              <div className="w-2 h-2 bg-[#94c356] rounded-full"></div>
+              <span className={`${
+                isDark ? 'text-gray-300' : 'text-gray-700'
+              }`}>
+                {achievement}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Call to Action */}
+      <div className={`text-center p-8 rounded-2xl ${
+        isDark 
+          ? 'bg-gradient-to-r from-orange-900/50 to-red-900/50 border border-orange-700' 
+          : 'bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200'
+      }`}>
+        <h3 className="text-2xl font-bold mb-4 text-orange-600">
+          Готовы стать экспертом?
+        </h3>
+        <p className={`text-lg mb-6 ${
+          isDark ? 'text-gray-300' : 'text-gray-700'
+        }`}>
+          Присоединяйтесь к сообществу профессионалов восстановительного фитнеса
+        </p>
+        <button className={`px-8 py-3 rounded-full font-semibold text-white bg-gradient-to-r from-[#94c356] to-[#7ba045] hover:from-[#7ba045] hover:to-[#94c356] transition-all duration-300 transform hover:scale-105 shadow-lg`}>
+          Начать обучение
         </button>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
-        {stats.map((stat, index) => {
-          const Icon = stat.icon;
-          return (
-            <div key={index} className={`rounded-xl p-4 text-center shadow-sm transition-colors duration-300 ${
-              isDark ? 'bg-gray-800' : 'bg-white'
-            }`}>
-              <Icon className="w-6 h-6 text-orange-500 mx-auto mb-2" />
-              <div className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>{stat.value}</div>
-              <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'} whitespace-pre-line leading-tight`}>{stat.label}</div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* News & Articles */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>Статьи и новости</h3>
-          <button className="text-orange-500 text-sm font-medium">Все статьи</button>
-        </div>
-        
-        <div className="space-y-4">
-          {newsItems.map((item) => (
-            <div key={item.id} className={`rounded-xl overflow-hidden shadow-sm transition-colors duration-300 ${
-              isDark ? 'bg-gray-800' : 'bg-white'
-            }`}>
-              <div className="md:flex">
-                <div className="md:w-32 md:flex-shrink-0">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-48 md:h-full object-cover"
-                  />
-                </div>
-                <div className="p-4 md:flex-1">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="bg-orange-100 text-orange-600 text-xs px-2 py-1 rounded-full">
-                      {item.category}
-                    </span>
-                    <div className={`flex items-center text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                      <Clock className="w-3 h-3 mr-1" />
-                      {item.readTime}
-                    </div>
-                  </div>
-                  <h4 className={`font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>{item.title}</h4>
-                  <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{item.excerpt}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Reviews */}
-      <div className="space-y-4">
-        <h3 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>Отзывы пользователей</h3>
-        
-        <div className="space-y-4">
-          {reviews.map((review) => (
-            <div key={review.id} className={`rounded-xl p-4 shadow-sm transition-colors duration-300 ${
-              isDark ? 'bg-gray-800' : 'bg-white'
-            }`}>
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <div className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>{review.name}</div>
-                  <div className="text-sm text-orange-600">{review.program}</div>
-                </div>
-                <div className="flex items-center">
-                  {[...Array(review.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-              </div>
-              <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{review.text}</p>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

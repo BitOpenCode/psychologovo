@@ -1,21 +1,52 @@
-import React, { useState } from 'react';
-import { User, Eye, EyeOff, Coins, Trophy, Target, Calendar, Settings, LogOut, Crown, GraduationCap, Users } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, Eye, EyeOff, Coins, Trophy, Target, Calendar, Settings, LogOut, Crown, GraduationCap, Users, ChevronRight, UserPlus, History } from 'lucide-react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { useAuth, UserRole } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
+import ProfileSettings from './ProfileSettings';
+import TeacherRequests from './TeacherRequests';
+import ScheduleHistory from './ScheduleHistory';
+import TeacherRequestForm from './TeacherRequestForm';
+import EventsManagement from './EventsManagement';
 
-const Profile: React.FC = () => {
+interface ProfileProps {
+  onShowEmailConfirmation: (data: {
+    email: string;
+    onConfirm: (code: string) => Promise<void>;
+    onResend: (code: string) => Promise<void>;
+    onBack: () => void;
+  }) => void;
+  onForceGoToLogin: (confirmedEmail?: string) => void;
+  onGoToPasswordReset: () => void;
+}
+
+const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToLogin, onGoToPasswordReset }) => {
   const { isDark } = useTheme();
-  const { user, isAuthenticated, login, logout, register } = useAuth();
+  const { user, isAuthenticated, logout, updateUserFromToken } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [registerData, setRegisterData] = useState({ 
     email: '', 
     password: '', 
-    name: '', 
-    role: 'student' as UserRole 
+    name: ''
   });
   const [isRegistering, setIsRegistering] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showProfileSettings, setShowProfileSettings] = useState(false);
+  const [showTeacherRequests, setShowTeacherRequests] = useState(false);
+  const [showScheduleHistory, setShowScheduleHistory] = useState(false);
+  const [showTeacherRequestForm, setShowTeacherRequestForm] = useState(false);
+  const [showEventsManagement, setShowEventsManagement] = useState(false);
+
+  // Автозаполнение email в форме входа после подтверждения
+  useEffect(() => {
+    const confirmedEmail = localStorage.getItem('irfit_confirmed_email');
+    if (confirmedEmail && !isRegistering) {
+      setLoginData(prev => ({ ...prev, email: confirmedEmail }));
+      // Очищаем сохраненный email
+      localStorage.removeItem('irfit_confirmed_email');
+    }
+  }, [isRegistering]);
+
 
   const achievements = [
     { id: 1, title: 'Первый онлайн урок', description: 'Завершили первое занятие', icon: '🎯', unlocked: true },
@@ -35,24 +66,226 @@ const Profile: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    const success = await login(loginData.email, loginData.password);
-    if (!success) {
-      alert('Неверный email или пароль');
+    
+    try {
+      // Отправляем вебхук на n8n
+      const webhookData = {
+        email: loginData.email,
+        password: loginData.password,
+        timestamp: new Date().toISOString(),
+        action: 'login_attempt',
+        source: 'irfit_app'
+      };
+      
+      const webhookResponse = await fetch('https://n8n.bitcoinlimb.com/webhook/login-irfit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(webhookData)
+      });
+      
+      if (webhookResponse.ok) {
+        const responseData = await webhookResponse.json();
+        console.log('Ответ от вебхука:', responseData);
+        console.log('Тип ответа:', typeof responseData);
+        console.log('Ключи ответа:', Object.keys(responseData));
+        console.log('Содержимое responseData:', JSON.stringify(responseData, null, 2));
+        console.log('responseData.success:', responseData.success);
+        console.log('responseData.token:', responseData.token);
+        
+        // Проверяем успешность входа
+        if (responseData.token) {
+          // Декодируем JWT токен для получения данных пользователя
+          const tokenData = decodeJWT(responseData.token);
+          console.log('Декодированные данные токена:', tokenData);
+          
+          // Сохраняем JWT токен
+          localStorage.setItem('irfit_token', responseData.token);
+          localStorage.setItem('irfit_is_authenticated', 'true');
+          
+          const userDataToStore = {
+            email: tokenData.email,
+            isEditor: tokenData.isEditor,
+            role: tokenData.role,
+            userId: tokenData.userId
+          };
+          localStorage.setItem('irfit_user_data', JSON.stringify(userDataToStore));
+          
+          // Обновляем пользователя в контексте аутентификации
+          updateUserFromToken(responseData.token);
+          
+          // Автоматически переключаемся на экран профиля
+          localStorage.setItem('irfit_active_screen', 'profile');
+          
+          // Показываем сообщение об успехе
+          alert('Вход выполнен успешно! Добро пожаловать в личный кабинет.');
+        } else {
+          // Ошибка входа
+          console.log('Детали ошибки:', responseData);
+          console.log('Проверка success:', responseData.success);
+          console.log('Проверка token:', responseData.token);
+          alert(responseData.message || 'Ошибка входа. Проверьте email и пароль.');
+        }
+      } else {
+        console.warn('Ошибка отправки вебхука:', webhookResponse.status);
+        alert('Ошибка соединения с сервером. Попробуйте еще раз.');
+      }
+    } catch (webhookError) {
+      console.warn('Ошибка отправки вебхука:', webhookError);
+      alert('Ошибка соединения. Проверьте интернет.');
     }
+    
+    setIsLoading(false);
+  };
+
+  // Функция для декодирования JWT токена
+  const decodeJWT = (token: string) => {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      
+      const decoded = JSON.parse(jsonPayload);
+      return decoded;
+    } catch (error) {
+      console.error('Ошибка декодирования JWT:', error);
+      return {};
+    }
+  };
+
+  // Функция для подтверждения кода
+  const handleConfirmCode = async (code: string) => {
+    if (!code.trim()) {
+      alert('Введите код подтверждения');
+      return;
+    }
+
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('https://n8n.bitcoinlimb.com/webhook/confirm-irfit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: registerData.email,
+          code: code
+        })
+      });
+
+      const responseData = await response.json();
+      
+      if (responseData.success) {
+        alert('Email подтвержден! Теперь вы можете войти в систему.');
+        setIsRegistering(false);
+        setRegisterData({ email: '', password: '', name: '' });
+        // Принудительно переходим к экрану входа с email для автозаполнения
+        onForceGoToLogin(registerData.email);
+      } else {
+        alert(responseData.error || 'Ошибка подтверждения кода');
+      }
+    } catch (error) {
+      console.error('Ошибка подтверждения:', error);
+      alert('Ошибка подтверждения кода');
+    }
+    
+    setIsLoading(false);
+  };
+
+  // Функция для повторной отправки кода
+  const handleResendCode = async () => {
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('https://n8n.bitcoinlimb.com/webhook/register-irfit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...registerData,
+          resend: true,
+          timestamp: new Date().toISOString(),
+          action: 'resend_code',
+          source: 'irfit_app'
+        })
+      });
+
+      const responseData = await response.json();
+      
+      if (responseData.success) {
+        alert('Новый код отправлен на email');
+      } else {
+        alert(responseData.message || 'Ошибка отправки кода');
+      }
+    } catch (error) {
+      console.error('Ошибка отправки кода:', error);
+      alert('Ошибка соединения. Попробуйте еще раз.');
+    }
+    
     setIsLoading(false);
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    const success = await register(registerData.email, registerData.password, registerData.name, registerData.role);
-    if (!success) {
-      alert('Ошибка регистрации. Возможно, пользователь уже существует.');
+    
+    try {
+      // Отправляем вебхук на n8n для регистрации
+      const webhookData = {
+        email: registerData.email,
+        name: registerData.name,
+        password: registerData.password,
+        role: 'student', // Всегда регистрируем как ученика
+        timestamp: new Date().toISOString(),
+        action: 'register_attempt',
+        source: 'irfit_app'
+      };
+      
+      const webhookResponse = await fetch('https://n8n.bitcoinlimb.com/webhook/register-irfit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(webhookData)
+      });
+      
+      if (webhookResponse.ok) {
+        const responseData = await webhookResponse.json();
+        console.log('Ответ от вебхука регистрации:', responseData);
+        
+        // Проверяем успешность регистрации
+        if (responseData.success) {
+          // Показываем экран подтверждения кода
+          onShowEmailConfirmation({
+            email: registerData.email,
+            onConfirm: handleConfirmCode,
+            onResend: handleResendCode,
+            onBack: () => {
+              // Возвращаемся к форме регистрации
+              setIsRegistering(false);
+            }
+          });
+        } else {
+          alert(responseData.message || 'Ошибка регистрации. Попробуйте еще раз.');
+        }
+      } else {
+        console.warn('Ошибка отправки вебхука регистрации:', webhookResponse.status);
+        alert('Ошибка соединения с сервером. Попробуйте еще раз.');
+      }
+    } catch (webhookError) {
+      console.warn('Ошибка отправки вебхука регистрации:', webhookError);
+      alert('Ошибка соединения. Проверьте интернет.');
     }
+    
     setIsLoading(false);
   };
 
-  const getRoleIcon = (role: UserRole) => {
+  const getRoleIcon = (role: string) => {
     switch (role) {
       case 'admin':
         return <Crown className="w-4 h-4 text-yellow-500" />;
@@ -63,13 +296,15 @@ const Profile: React.FC = () => {
     }
   };
 
-  const getRoleName = (role: UserRole) => {
+  const getRoleName = (role: string) => {
     switch (role) {
       case 'admin':
         return 'Администратор';
       case 'teacher':
-        return 'Тренер';
+        return 'Учитель';
       case 'student':
+        return 'Ученик';
+      default:
         return 'Ученик';
     }
   };
@@ -81,7 +316,7 @@ const Profile: React.FC = () => {
           isDark ? 'bg-gray-800' : 'bg-white'
         }`}>
           <div className="text-center mb-6">
-            <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-20 h-20 bg-gradient-to-r from-[#94c356] to-[#7ba045] rounded-full flex items-center justify-center mx-auto mb-4">
               <User className="w-10 h-10 text-white" />
             </div>
             <h2 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>Вход в личный кабинет</h2>
@@ -99,7 +334,7 @@ const Profile: React.FC = () => {
                   required
                   value={loginData.email}
                   onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all ${
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#94c356] focus:border-transparent transition-all ${
                     isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
                   }`}
                   placeholder="Введите ваш email"
@@ -116,7 +351,7 @@ const Profile: React.FC = () => {
                     required
                     value={loginData.password}
                     onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                    className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all ${
+                    className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-[#94c356] focus:border-transparent transition-all ${
                       isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
                     }`}
                     placeholder="Введите пароль"
@@ -134,7 +369,7 @@ const Profile: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-orange-500 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-[#94c356] to-[#7ba045] text-white py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 hover:from-[#7ba045] hover:to-[#94c356]"
               >
                 {isLoading ? 'Вход...' : 'Войти'}
               </button>
@@ -150,7 +385,7 @@ const Profile: React.FC = () => {
                   required
                   value={registerData.name}
                   onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all ${
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#94c356] focus:border-transparent transition-all ${
                     isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
                   }`}
                   placeholder="Введите ваше имя"
@@ -166,7 +401,7 @@ const Profile: React.FC = () => {
                   required
                   value={registerData.email}
                   onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all ${
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#94c356] focus:border-transparent transition-all ${
                     isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
                   }`}
                   placeholder="Введите ваш email"
@@ -182,44 +417,34 @@ const Profile: React.FC = () => {
                   required
                   value={registerData.password}
                   onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all ${
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#94c356] focus:border-transparent transition-all ${
                     isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
                   }`}
                   placeholder="Введите пароль"
                 />
               </div>
 
-              <div>
-                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Роль
-                </label>
-                <select
-                  value={registerData.role}
-                  onChange={(e) => setRegisterData({ ...registerData, role: e.target.value as UserRole })}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all ${
-                    isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
-                  }`}
-                >
-                  <option value="student">Ученик</option>
-                  <option value="teacher">Тренер</option>
-                  <option value="admin">Администратор</option>
-                </select>
-              </div>
+              {/* Роль автоматически устанавливается как "student" */}
 
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-orange-500 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-[#94c356] to-[#7ba045] text-white py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 hover:from-[#7ba045] hover:to-[#94c356]"
               >
                 {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
               </button>
             </form>
           )}
 
+
+
           <div className="mt-6 text-center space-y-2">
             {!isRegistering ? (
               <>
-                <button className="text-orange-500 text-sm hover:underline">
+                <button 
+                  onClick={onGoToPasswordReset}
+                  className="text-[#94c356] text-sm hover:underline"
+                >
                   Забыли пароль?
                 </button>
                 <div>
@@ -228,7 +453,7 @@ const Profile: React.FC = () => {
                   </span>
                   <button 
                     onClick={() => setIsRegistering(true)}
-                    className="text-orange-500 text-sm hover:underline"
+                    className="text-[#94c356] text-sm hover:underline"
                   >
                     Регистрация
                   </button>
@@ -241,7 +466,7 @@ const Profile: React.FC = () => {
                 </span>
                 <button 
                   onClick={() => setIsRegistering(false)}
-                  className="text-orange-500 text-sm hover:underline"
+                  className="text-[#94c356] text-sm hover:underline"
                 >
                   Войти
                 </button>
@@ -253,10 +478,60 @@ const Profile: React.FC = () => {
     );
   }
 
+  // Если открыт экран заявки на роль учителя, показываем его
+  if (showTeacherRequestForm) {
+    return (
+      <TeacherRequestForm
+        onBack={() => setShowTeacherRequestForm(false)}
+        isDark={isDark}
+      />
+    );
+  }
+
+  // Если открыт экран запросов учителей, показываем его
+  if (showTeacherRequests) {
+    return (
+      <TeacherRequests
+        onBack={() => setShowTeacherRequests(false)}
+        isDark={isDark}
+      />
+    );
+  }
+
+  // Если открыт экран истории расписаний, показываем его
+  if (showScheduleHistory) {
+    return (
+      <ScheduleHistory
+        onBack={() => setShowScheduleHistory(false)}
+        isDark={isDark}
+      />
+    );
+  }
+
+  // Если открыты настройки профиля, показываем их
+  if (showProfileSettings) {
+    return (
+      <ProfileSettings
+        user={user}
+        onBack={() => setShowProfileSettings(false)}
+      />
+    );
+  }
+
+  // Если открыт экран управления событиями, показываем его
+  if (showEventsManagement) {
+    return (
+      <EventsManagement
+        onBack={() => setShowEventsManagement(false)}
+        isDark={isDark}
+      />
+    );
+  }
+
   return (
     <div className="max-w-md mx-auto px-4 py-6 space-y-6 md:max-w-4xl md:px-8 transition-colors duration-300">
       {/* Profile Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-purple-600 rounded-2xl p-6 text-white">
+      <div className="bg-gradient-to-r from-[#94c356] to-[#7ba045] rounded-2xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
@@ -266,7 +541,7 @@ const Profile: React.FC = () => {
               <h2 className="text-xl font-bold">{user?.name}</h2>
               <div className="flex items-center space-x-2">
                 {getRoleIcon(user?.role || 'student')}
-                <p className="text-orange-100">{getRoleName(user?.role || 'student')}</p>
+                <p className="text-white/90">{getRoleName(user?.role || 'student')}</p>
               </div>
             </div>
           </div>
@@ -300,8 +575,8 @@ const Profile: React.FC = () => {
               <div key={index} className={`rounded-xl p-4 text-center shadow-sm transition-colors duration-300 ${
                 isDark ? 'bg-gray-800' : 'bg-white'
               }`}>
-                <Icon className="w-6 h-6 text-orange-500 mx-auto mb-2" />
-                <div className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>{stat.value}</div>
+                <Icon className={`w-8 h-8 mx-auto mb-2 text-[#94c356]`} />
+                <div className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>{stat.value}</div>
                 <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{stat.label}</div>
               </div>
             );
@@ -311,209 +586,183 @@ const Profile: React.FC = () => {
 
       {/* Achievements - только для учеников */}
       {user?.role === 'student' && (
-        <div className="space-y-4">
-          <h3 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>Ваши достижения</h3>
-          
+        <div className={`rounded-2xl p-6 transition-colors duration-300 ${
+          isDark ? 'bg-gray-800' : 'bg-white'
+        }`}>
+          <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>Достижения</h3>
           <div className="grid grid-cols-2 gap-4">
             {achievements.map((achievement) => (
-              <div
-                key={achievement.id}
-                className={`rounded-xl p-4 shadow-sm transition-all ${
-                  isDark ? 'bg-gray-800' : 'bg-white'
-                } ${
-                  achievement.unlocked
-                    ? isDark 
-                      ? 'border-2 border-orange-500/30 bg-gradient-to-br from-orange-900/20 to-purple-900/20'
-                      : 'border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-purple-50'
-                    : 'opacity-50 grayscale'
-                }`}
-              >
-                <div className="text-2xl mb-2">{achievement.icon}</div>
-                <h4 className={`font-semibold text-sm mb-1 ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                  {achievement.title}
-                </h4>
-                <p className={`text-xs ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>{achievement.description}</p>
-                {achievement.unlocked && (
-                  <div className="mt-2">
-                    <span className="bg-orange-100 text-orange-600 text-xs px-2 py-1 rounded-full">
-                      Получено
-                    </span>
+              <div key={achievement.id} className={`flex items-center space-x-3 p-3 rounded-lg transition-colors duration-300 ${
+                achievement.unlocked
+                  ? isDark ? 'bg-[#94c356]/20 border border-[#94c356]/30' : 'bg-[#94c356]/10 border border-[#94c356]/30'
+                  : isDark ? 'bg-gray-700' : 'bg-gray-100'
+              }`}>
+                <span className="text-2xl">{achievement.icon}</span>
+                <div className="flex-1">
+                  <div className={`font-medium text-sm ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                    {achievement.title}
                   </div>
-                )}
+                  <div className={`text-xs ${achievement.unlocked ? (isDark ? 'text-[#94c356]' : 'text-[#94c356]') : (isDark ? 'text-gray-500' : 'text-gray-500')}`}>
+                    {achievement.description}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Admin/Teacher Stats */}
-      {(user?.role === 'admin' || user?.role === 'teacher') && (
-        <div className="grid grid-cols-3 gap-4">
-          {user?.role === 'admin' ? (
-            // Статистика для администратора
-            <>
-              <div className={`rounded-xl p-4 text-center shadow-sm transition-colors duration-300 ${
-                isDark ? 'bg-gray-800' : 'bg-white'
-              }`}>
-                <Users className="w-6 h-6 text-blue-500 mx-auto mb-2" />
-                <div className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>1,250</div>
-                <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Всего пользователей</div>
-              </div>
-              <div className={`rounded-xl p-4 text-center shadow-sm transition-colors duration-300 ${
-                isDark ? 'bg-gray-800' : 'bg-white'
-              }`}>
-                <GraduationCap className="w-6 h-6 text-green-500 mx-auto mb-2" />
-                <div className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>25</div>
-                <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Тренеров</div>
-              </div>
-              <div className={`rounded-xl p-4 text-center shadow-sm transition-colors duration-300 ${
-                isDark ? 'bg-gray-800' : 'bg-white'
-              }`}>
-                <Calendar className="w-6 h-6 text-purple-500 mx-auto mb-2" />
-                <div className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>150+</div>
-                <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Программ</div>
-              </div>
-            </>
-          ) : (
-            // Статистика для тренера
-            <>
-              <div className={`rounded-xl p-4 text-center shadow-sm transition-colors duration-300 ${
-                isDark ? 'bg-gray-800' : 'bg-white'
-              }`}>
-                <Users className="w-6 h-6 text-blue-500 mx-auto mb-2" />
-                <div className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>45</div>
-                <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Мои ученики</div>
-              </div>
-              <div className={`rounded-xl p-4 text-center shadow-sm transition-colors duration-300 ${
-                isDark ? 'bg-gray-800' : 'bg-white'
-              }`}>
-                <Calendar className="w-6 h-6 text-green-500 mx-auto mb-2" />
-                <div className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>12</div>
-                <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Занятий сегодня</div>
-              </div>
-              <div className={`rounded-xl p-4 text-center shadow-sm transition-colors duration-300 ${
-                isDark ? 'bg-gray-800' : 'bg-white'
-              }`}>
-                <Trophy className="w-6 h-6 text-purple-500 mx-auto mb-2" />
-                <div className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>4.8</div>
-                <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Рейтинг</div>
-              </div>
-            </>
-          )}
-        </div>
-      )}
-
-      {/* Admin/Teacher Controls */}
-      {(user?.role === 'admin' || user?.role === 'teacher') && (
-        <div className={`rounded-xl p-6 shadow-sm space-y-4 transition-colors duration-300 ${
+      {/* Запрос роли учителя - только для учеников */}
+      {user?.role === 'student' && (
+        <div className={`rounded-2xl p-6 transition-colors duration-300 ${
           isDark ? 'bg-gray-800' : 'bg-white'
         }`}>
-          <div className="flex items-center justify-between">
-            <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
-              {user?.role === 'admin' ? 'Панель администратора' : 'Панель тренера'}
-            </h3>
-            <div className="flex items-center space-x-2">
-              {user?.role === 'admin' && <Crown className="w-5 h-5 text-yellow-500" />}
-              {user?.role === 'teacher' && <GraduationCap className="w-5 h-5 text-blue-500" />}
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <button className={`p-4 rounded-xl border-2 border-dashed transition-all hover:border-orange-500 hover:bg-orange-50 ${
-              isDark ? 'border-gray-600 hover:bg-orange-900/20' : 'border-gray-300'
-            }`}>
-              <div className="text-center">
-                <Calendar className="w-8 h-8 text-orange-500 mx-auto mb-2" />
-                <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                  Управление расписанием
-                </span>
+          <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>Развитие</h3>
+          <div className="space-y-3">
+            <button 
+              onClick={() => setShowTeacherRequestForm(true)}
+              className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-300 ${
+                isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
+              }`}
+            >
+              <div className="flex items-center space-x-3">
+                <GraduationCap className={`w-5 h-5 ${isDark ? 'text-blue-400' : 'text-blue-500'}`} />
+                <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Запросить роль учителя</span>
               </div>
+              <ChevronRight className={`w-4 h-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
             </button>
-            
-            <button className={`p-4 rounded-xl border-2 border-dashed transition-all hover:border-orange-500 hover:bg-orange-50 ${
-              isDark ? 'border-gray-600 hover:bg-orange-900/20' : 'border-gray-300'
-            }`}>
-              <div className="text-center">
-                <Trophy className="w-8 h-8 text-orange-500 mx-auto mb-2" />
-                <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                  Добавить задание
-                </span>
-              </div>
-            </button>
-            
-            {user?.role === 'admin' && (
-              <>
-                <button className={`p-4 rounded-xl border-2 border-dashed transition-all hover:border-orange-500 hover:bg-orange-50 ${
-                  isDark ? 'border-gray-600 hover:bg-orange-900/20' : 'border-gray-300'
-                }`}>
-                  <div className="text-center">
-                    <Users className="w-8 h-8 text-orange-500 mx-auto mb-2" />
-                    <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                      Управление пользователями
-                    </span>
-                  </div>
-                </button>
-                
-                <button className={`p-4 rounded-xl border-2 border-dashed transition-all hover:border-orange-500 hover:bg-orange-50 ${
-                  isDark ? 'border-gray-600 hover:bg-orange-900/20' : 'border-gray-300'
-                }`}>
-                  <div className="text-center">
-                    <Settings className="w-8 h-8 text-orange-500 mx-auto mb-2" />
-                    <span className={`text-sm font-medium ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                      Настройки системы
-                    </span>
-                  </div>
-                </button>
-              </>
-            )}
           </div>
         </div>
       )}
 
-      {/* Personal Data */}
-      <div className={`rounded-xl p-6 shadow-sm space-y-4 transition-colors duration-300 ${
+      {/* Settings */}
+      <div className={`rounded-2xl p-6 transition-colors duration-300 ${
         isDark ? 'bg-gray-800' : 'bg-white'
       }`}>
-        <div className="flex items-center justify-between">
-          <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>Личные данные</h3>
-          <button className="text-orange-500">
-            <Settings className="w-5 h-5" />
-          </button>
-        </div>
-        
+        <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>Настройки</h3>
         <div className="space-y-3">
-          <div className="flex justify-between">
-            <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Email:</span>
-            <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-800'}`}>{user?.email}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Роль:</span>
-            <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-800'}`}>{getRoleName(user?.role || 'student')}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Дата регистрации:</span>
-            <span className={`font-medium ${isDark ? 'text-white' : 'text-gray-800'}`}>
-              {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('ru-RU') : 'Не указана'}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Статус:</span>
-            <span className="font-medium text-green-600">Активен</span>
-          </div>
+          <button 
+            onClick={() => setShowProfileSettings(true)}
+            className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-300 ${
+              isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
+            }`}
+          >
+            <div className="flex items-center space-x-3">
+              <Settings className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
+              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Настройки профиля</span>
+            </div>
+            <ChevronRight className={`w-4 h-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
+          </button>
+          
+          <button className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors duration-300 ${
+            isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-50'
+          }`}>
+            <div className="flex items-center space-x-3">
+              <Users className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
+              <span className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>Пригласить друзей</span>
+            </div>
+            <ChevronRight className={`w-4 h-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
+          </button>
         </div>
       </div>
 
-      {/* Logout Button */}
-      <button
-        onClick={logout}
-        className={`w-full py-3 rounded-xl font-medium transition-all ${
-          isDark 
-            ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' 
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-        }`}
-      >
-        Выйти из аккаунта
-      </button>
+      {/* Административные функции - только для администраторов */}
+      {user?.role === 'admin' && (
+        <div className={`rounded-2xl p-6 transition-colors duration-300 ${
+          isDark ? 'bg-gray-800' : 'bg-white'
+        }`}>
+          <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>
+            Административные функции
+          </h3>
+          <div className="space-y-4">
+            {/* Запросы на добавление в качестве Учителя */}
+            <button
+              onClick={() => setShowTeacherRequests(true)}
+              className={`w-full p-4 rounded-xl border-2 border-dashed transition-all duration-300 ${
+                isDark 
+                  ? 'border-gray-600 hover:border-[#94c356] hover:bg-gray-700/50' 
+                  : 'border-gray-300 hover:border-[#94c356] hover:bg-gray-50'
+              } group`}
+            >
+              <div className="flex items-center space-x-3">
+                <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center group-hover:bg-[#94c356] transition-colors`}>
+                  <UserPlus className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'} group-hover:text-white transition-colors`} />
+                </div>
+                <div className="flex-1 text-left">
+                  <h4 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                    Запросы на добавление в качестве Учителя
+                  </h4>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                    Рассмотрение заявок от пользователей
+                  </p>
+                </div>
+                <div className={`w-6 h-6 rounded-full ${isDark ? 'bg-gray-600' : 'bg-gray-300'} flex items-center justify-center group-hover:bg-[#94c356] transition-colors`}>
+                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </button>
+
+            {/* Последние изменения расписаний */}
+            <button
+              onClick={() => setShowScheduleHistory(true)}
+              className={`w-full p-4 rounded-xl border-2 border-dashed transition-all duration-300 ${
+                isDark 
+                  ? 'border-gray-600 hover:border-[#94c356] hover:bg-gray-700/50' 
+                  : 'border-gray-300 hover:border-[#94c356] hover:bg-gray-50'
+              } group`}
+            >
+              <div className="flex items-center space-x-3">
+                <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center group-hover:bg-[#94c356] transition-colors`}>
+                  <History className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'} group-hover:text-white transition-colors`} />
+                </div>
+                <div className="flex-1 text-left">
+                  <h4 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                    Последние изменения расписаний
+                  </h4>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                    История и фильтрация изменений
+                  </p>
+                </div>
+                <div className={`w-6 h-6 rounded-full ${isDark ? 'bg-gray-600' : 'bg-gray-300'} flex items-center justify-center group-hover:bg-[#94c356] transition-colors`}>
+                  <span className="text-xs font-bold text-white">∞</span>
+                </div>
+              </div>
+            </button>
+
+            {/* Управление событиями */}
+            <button
+              onClick={() => setShowEventsManagement(true)}
+              className={`w-full p-4 rounded-xl border-2 border-dashed transition-all duration-300 ${
+                isDark 
+                  ? 'border-gray-600 hover:border-[#94c356] hover:bg-gray-700/50' 
+                  : 'border-gray-300 hover:border-[#94c356] hover:bg-gray-50'
+              } group`}
+            >
+              <div className="flex items-center space-x-3">
+                <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center group-hover:bg-[#94c356] transition-colors`}>
+                  <Calendar className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'} group-hover:text-white transition-colors`} />
+                </div>
+                <div className="flex-1 text-left">
+                  <h4 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                    Управление событиями
+                  </h4>
+                  <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                    Добавление и редактирование событий
+                  </p>
+                </div>
+                <div className={`w-6 h-6 rounded-full ${isDark ? 'bg-gray-600' : 'bg-gray-300'} flex items-center justify-center group-hover:bg-[#94c356] transition-colors`}>
+                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

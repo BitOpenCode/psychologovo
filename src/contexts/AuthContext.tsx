@@ -20,6 +20,7 @@ interface AuthContextType {
   logout: () => void;
   register: (email: string, password: string, name: string, role: UserRole) => Promise<boolean>;
   updateProfile: (updates: Partial<User>) => void;
+  updateUserFromToken: (token: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -65,11 +66,36 @@ const mockUsers: User[] = [
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
-    const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
+    // Проверяем localStorage для аутентификации
+    const isAuth = localStorage.getItem('irfit_is_authenticated');
+    const userData = localStorage.getItem('irfit_user_data');
+    const token = localStorage.getItem('irfit_token');
+    
+    if (isAuth === 'true' && userData && token) {
+      try {
+        const parsedUserData = JSON.parse(userData);
+        const user = {
+          id: parsedUserData.userId,
+          email: parsedUserData.email,
+          name: parsedUserData.email.split('@')[0], // Используем email как имя
+          role: parsedUserData.role || 'student', // Берем роль напрямую из localStorage
+          isActive: true,
+          createdAt: new Date(),
+          lastLogin: new Date(),
+        };
+        return user;
+      } catch (error) {
+        console.error('Ошибка парсинга данных пользователя:', error);
+        return null;
+      }
+    }
+    
+    return null;
   });
 
-  const [isAuthenticated, setIsAuthenticated] = useState(!!user);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('irfit_is_authenticated') === 'true';
+  });
 
   useEffect(() => {
     if (user) {
@@ -80,6 +106,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsAuthenticated(false);
     }
   }, [user]);
+
+  // Дополнительный useEffect для синхронизации с localStorage
+  useEffect(() => {
+    const checkAuthStatus = () => {
+      const isAuth = localStorage.getItem('irfit_is_authenticated') === 'true';
+      const token = localStorage.getItem('irfit_token');
+      const userData = localStorage.getItem('irfit_user_data');
+      
+      if (isAuth && token && userData) {
+        try {
+          const parsedUserData = JSON.parse(userData);
+          const user = {
+            id: parsedUserData.userId,
+            email: parsedUserData.email,
+            name: parsedUserData.email.split('@')[0],
+            role: parsedUserData.role || 'student', // Берем роль напрямую из localStorage
+            isActive: true,
+            createdAt: new Date(),
+            lastLogin: new Date(),
+          };
+          setUser(user);
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error('Ошибка парсинга данных пользователя:', error);
+          setIsAuthenticated(false);
+          setUser(null);
+        }
+      } else {
+        setIsAuthenticated(false);
+        setUser(null);
+      }
+    };
+
+    // Проверяем статус при загрузке
+    checkAuthStatus();
+
+    // Слушаем изменения в localStorage
+    window.addEventListener('storage', checkAuthStatus);
+    
+    return () => {
+      window.removeEventListener('storage', checkAuthStatus);
+    };
+  }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     // Имитация API запроса
@@ -97,6 +166,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     setUser(null);
+    // Очищаем все данные аутентификации
+    localStorage.removeItem('irfit_token');
+    localStorage.removeItem('irfit_is_authenticated');
+    localStorage.removeItem('irfit_user_data');
+    localStorage.removeItem('user');
   };
 
   const register = async (email: string, password: string, name: string, role: UserRole): Promise<boolean> => {
@@ -129,6 +203,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const updateUserFromToken = (token: string) => {
+    try {
+      // Декодируем JWT токен
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      
+      const tokenData = JSON.parse(jsonPayload);
+      
+      const user = {
+        id: tokenData.userId,
+        email: tokenData.email,
+        name: tokenData.email.split('@')[0],
+        role: tokenData.role || 'student', // Берем роль напрямую из токена
+        isActive: true,
+        createdAt: new Date(),
+        lastLogin: new Date(),
+      };
+      setUser(user);
+      setIsAuthenticated(true);
+      localStorage.setItem('user', JSON.stringify(user));
+    } catch (error) {
+      console.error('Ошибка обновления пользователя из токена:', error);
+    }
+  };
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -137,6 +239,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       logout,
       register,
       updateProfile,
+      updateUserFromToken,
     }}>
       {children}
     </AuthContext.Provider>
