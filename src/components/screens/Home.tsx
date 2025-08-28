@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
+import { LOGO_PATH } from '../../utils/paths';
 
 const Home: React.FC = () => {
   const { isDark } = useTheme();
@@ -49,7 +50,7 @@ const Home: React.FC = () => {
         <div className="flex justify-center mb-6">
           <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-[#94c356] shadow-2xl bg-white p-1">
             <img 
-              src="/irfit-logo.png" 
+              src={LOGO_PATH} 
               alt="IRFit Logo" 
               className="w-full h-full object-cover rounded-full"
             />

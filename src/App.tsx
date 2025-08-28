@@ -9,6 +9,7 @@ import Profile from './components/screens/Profile';
 import EmailConfirmation from './components/screens/EmailConfirmation';
 import PasswordReset from './components/screens/PasswordReset';
 import ThemeToggle from './components/ThemeToggle';
+import { LOGO_PATH } from './utils/paths';
 
 function App() {
   const { isDark } = useTheme();
@@ -195,7 +196,7 @@ function App() {
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#94c356] shadow-lg">
                 <img 
-                  src="/irfit-logo.png" 
+                  src={LOGO_PATH} 
                   alt="IRFit Logo" 
                   className="w-full h-full object-cover"
                 />

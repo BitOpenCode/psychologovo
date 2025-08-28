@@ -767,4 +767,4 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
   );
 };
 
-export default Profile;
+export default Profile; 
