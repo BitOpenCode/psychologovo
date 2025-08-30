@@ -19,15 +19,15 @@ const Navigation: React.FC<NavigationProps> = ({ activeScreen, onScreenChange })
     },
     {
       id: 'courses',
-      label: 'Курсы',
+      label: 'Услуги',
       icon: BookOpen,
-      description: 'Обучение'
+      description: 'Консультации'
     },
     {
       id: 'schedule',
       label: 'Расписание',
       icon: Calendar,
-      description: 'Календарь'
+      description: 'Сессии'
     },
     {
       id: 'profile',
@@ -39,8 +39,8 @@ const Navigation: React.FC<NavigationProps> = ({ activeScreen, onScreenChange })
 
   return (
     <nav className={`fixed bottom-0 left-0 right-0 z-50 transition-colors duration-300 ${
-      isDark ? 'bg-gray-900/90 backdrop-blur-md' : 'bg-white/90 backdrop-blur-md'
-    } border-t ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+      isDark ? 'bg-psyhologovo-dark-900/90 backdrop-blur-md' : 'bg-white/90 backdrop-blur-md'
+    } border-t ${isDark ? 'border-psyhologovo-dark-700' : 'border-gray-200'}`}>
       <div className="max-w-md mx-auto px-4 py-2 md:max-w-4xl">
         <div className="flex justify-around">
           {navItems.map((item) => {
@@ -53,8 +53,8 @@ const Navigation: React.FC<NavigationProps> = ({ activeScreen, onScreenChange })
                 onClick={() => onScreenChange(item.id)}
                 className={`flex flex-col items-center py-2 px-2 rounded-lg transition-all duration-200 ${
                   isActive
-                    ? 'text-[#94c356] bg-[#94c356]/10 dark:bg-[#94c356]/20'
-                    : `text-gray-600 dark:text-gray-400 hover:text-[#94c356] dark:hover:text-[#94c356]`
+                    ? 'text-psyhologovo-500 bg-psyhologovo-500/10 dark:bg-psyhologovo-500/20'
+                    : `text-gray-600 dark:text-gray-400 hover:text-psyhologovo-500 dark:hover:text-psyhologovo-500`
                 }`}
               >
                 <Icon className={`w-5 h-5 mb-1 transition-transform duration-200 ${

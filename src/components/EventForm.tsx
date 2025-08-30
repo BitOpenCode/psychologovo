@@ -88,19 +88,19 @@ const EventForm: React.FC<EventFormProps> = ({
       isDark ? 'bg-black/50' : 'bg-black/30'
     }`}>
       <div className={`w-full max-w-2xl max-h-[calc(100vh-5rem)] overflow-y-auto rounded-2xl shadow-2xl ${
-        isDark ? 'bg-gray-800' : 'bg-white'
+        isDark ? 'bg-psyhologovo-dark-800' : 'bg-white'
       }`}>
         {/* Header */}
         <div className={`flex items-center justify-between p-6 border-b ${
-          isDark ? 'border-gray-700' : 'border-gray-200'
+          isDark ? 'border-psyhologovo-dark-600' : 'border-psyhologovo-200'
         }`}>
-          <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>
+          <h2 className={`text-xl font-bold ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>
             {isEditing ? 'Редактировать событие' : 'Добавить новое событие'}
           </h2>
           <button
             onClick={onCancel}
             className={`p-2 rounded-lg transition-colors ${
-              isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+              isDark ? 'hover:bg-psyhologovo-dark-700 text-psyhologovo-400' : 'hover:bg-psyhologovo-100 text-psyhologovo-600'
             }`}
           >
             <X className="w-5 h-5" />
@@ -111,17 +111,17 @@ const EventForm: React.FC<EventFormProps> = ({
         <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           {/* Название события */}
           <div>
-            <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+            <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
               Название события *
             </label>
             <input
               type="text"
               value={formData.title}
               onChange={(e) => handleInputChange('title', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                 isDark 
-                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                  : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                  ? 'bg-psyhologovo-dark-700 border-psyhologovo-dark-600 text-white placeholder-psyhologovo-dark-400' 
+                  : 'bg-white border-psyhologovo-300 text-gray-900 placeholder-psyhologovo-500'
               }`}
               placeholder="Например: День открытых дверей"
               required
@@ -131,16 +131,16 @@ const EventForm: React.FC<EventFormProps> = ({
           {/* Тип события и дата */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
                 Тип события *
               </label>
               <select
                 value={formData.event_type}
                 onChange={(e) => handleInputChange('event_type', e.target.value as 'online' | 'offline')}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                   isDark 
-                    ? 'bg-gray-700 border-gray-600 text-white' 
-                    : 'bg-white border-gray-300 text-gray-900'
+                    ? 'bg-psyhologovo-dark-700 border-psyhologovo-dark-600 text-white' 
+                    : 'bg-white border-psyhologovo-300 text-gray-900'
                 }`}
               >
                 <option value="online">Онлайн</option>
@@ -149,17 +149,17 @@ const EventForm: React.FC<EventFormProps> = ({
             </div>
 
             <div>
-              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
                 Дата проведения *
               </label>
               <input
                 type="date"
                 value={formData.event_date}
                 onChange={(e) => handleInputChange('event_date', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                   isDark 
-                    ? 'bg-gray-700 border-gray-600 text-white' 
-                    : 'bg-white border-gray-300 text-gray-900'
+                    ? 'bg-psyhologovo-dark-700 border-psyhologovo-dark-600 text-white' 
+                    : 'bg-white border-psyhologovo-300 text-gray-900'
                 }`}
                 required
               />
@@ -169,17 +169,17 @@ const EventForm: React.FC<EventFormProps> = ({
           {/* Время и активность */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
                 Время начала *
               </label>
               <input
                 type="time"
                 value={formData.start_time}
                 onChange={(e) => handleInputChange('start_time', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                   isDark 
-                    ? 'bg-gray-700 border-gray-600 text-white' 
-                    : 'bg-white border-gray-300 text-gray-900'
+                    ? 'bg-psyhologovo-dark-700 border-psyhologovo-dark-600 text-white' 
+                    : 'bg-white border-psyhologovo-300 text-gray-900'
                 }`}
                 required
               />
@@ -191,9 +191,9 @@ const EventForm: React.FC<EventFormProps> = ({
                   type="checkbox"
                   checked={formData.is_active}
                   onChange={(e) => handleInputChange('is_active', e.target.checked)}
-                  className="w-4 h-4 text-[#94c356] border-gray-300 rounded focus:ring-[#94c356]"
+                  className="w-4 h-4 text-psyhologovo-500 border-psyhologovo-300 rounded focus:ring-psyhologovo-500"
                 />
-                <span className={`ml-2 text-sm ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+                <span className={`ml-2 text-sm ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
                   Активное событие
                 </span>
               </label>
@@ -202,17 +202,17 @@ const EventForm: React.FC<EventFormProps> = ({
 
           {/* Описание */}
           <div>
-            <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+            <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
               Описание события *
             </label>
             <textarea
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
               rows={4}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                 isDark 
-                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                  : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                  ? 'bg-psyhologovo-dark-700 border-psyhologovo-dark-600 text-white placeholder-psyhologovo-dark-400' 
+                  : 'bg-white border-psyhologovo-300 text-gray-900 placeholder-psyhologovo-500'
               }`}
               placeholder="Подробное описание события..."
               required
@@ -222,17 +222,17 @@ const EventForm: React.FC<EventFormProps> = ({
           {/* Ссылка и кнопка */}
           <div className="space-y-4">
             <div>
-              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+              <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
                 Ссылка на мероприятие
               </label>
               <input
                 type="url"
                 value={formData.event_link}
                 onChange={(e) => handleInputChange('event_link', e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                   isDark 
-                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                    ? 'bg-psyhologovo-dark-700 border-psyhologovo-dark-600 text-white placeholder-psyhologovo-dark-400' 
+                    : 'bg-white border-psyhologovo-300 text-gray-900 placeholder-psyhologovo-500'
                 }`}
                 placeholder="https://example.com/event"
               />
@@ -244,9 +244,9 @@ const EventForm: React.FC<EventFormProps> = ({
                   type="checkbox"
                   checked={formData.show_button}
                   onChange={(e) => handleInputChange('show_button', e.target.checked)}
-                  className="w-4 h-4 text-[#94c356] border-gray-300 rounded focus:ring-[#94c356]"
+                  className="w-4 h-4 text-psyhologovo-500 border-psyhologovo-300 rounded focus:ring-psyhologovo-500"
                 />
-                <span className={`ml-2 text-sm ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+                <span className={`ml-2 text-sm ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
                   Показывать кнопку присоединения
                 </span>
               </label>
@@ -254,17 +254,17 @@ const EventForm: React.FC<EventFormProps> = ({
 
             {formData.show_button && (
               <div>
-                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
+                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
                   Текст кнопки
                 </label>
                 <input
                   type="text"
                   value={formData.button_text}
                   onChange={(e) => handleInputChange('button_text', e.target.value)}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                     isDark 
-                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                      : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                      ? 'bg-psyhologovo-dark-700 border-psyhologovo-dark-600 text-white placeholder-psyhologovo-dark-400' 
+                      : 'bg-white border-psyhologovo-300 text-gray-900 placeholder-psyhologovo-500'
                   }`}
                   placeholder="Присоединиться"
                 />
@@ -273,14 +273,14 @@ const EventForm: React.FC<EventFormProps> = ({
           </div>
 
           {/* Кнопки действий */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end space-y-3 sm:space-y-0 sm:space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <div className={`flex flex-col sm:flex-row items-stretch sm:items-center justify-end space-y-3 sm:space-y-0 sm:space-x-3 pt-6 pb-8 border-t ${isDark ? 'border-psyhologovo-dark-600' : 'border-psyhologovo-200'}`}>
             <button
               type="button"
               onClick={onCancel}
               className={`px-4 sm:px-6 py-3 rounded-lg font-medium transition-colors ${
                 isDark 
-                  ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' 
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-psyhologovo-dark-700 text-psyhologovo-200 hover:bg-psyhologovo-dark-600' 
+                  : 'bg-psyhologovo-200 text-psyhologovo-700 hover:bg-psyhologovo-300'
               }`}
             >
               Отмена
@@ -291,7 +291,7 @@ const EventForm: React.FC<EventFormProps> = ({
               className={`px-4 sm:px-6 py-3 rounded-lg font-medium text-white transition-colors flex items-center justify-center space-x-2 ${
                 isLoading 
                   ? 'bg-gray-400 cursor-not-allowed' 
-                  : 'bg-[#94c356] hover:bg-[#7ba045]'
+                  : 'bg-psyhologovo-500 hover:bg-psyhologovo-600 shadow-md hover:shadow-lg'
               }`}
             >
               {isLoading ? (

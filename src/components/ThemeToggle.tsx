@@ -10,7 +10,7 @@ const ThemeToggle: React.FC = () => {
       onClick={toggleTheme}
       className={`p-2 rounded-lg transition-all duration-300 ${
         isDark 
-          ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700' 
+          ? 'bg-gray-800 text-psyhologovo-400 hover:bg-gray-700' 
           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
       }`}
       aria-label="Переключить тему"

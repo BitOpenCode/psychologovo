@@ -3,7 +3,7 @@ import { User, Eye, EyeOff, Coins, Trophy, Target, Calendar, Settings, LogOut, C
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import ProfileSettings from './ProfileSettings';
-import TeacherRequests from './TeacherRequests';
+import AnonymousQuestions from './AnonymousQuestions';
 import ScheduleHistory from './ScheduleHistory';
 import TeacherRequestForm from './TeacherRequestForm';
 import EventsManagement from './EventsManagement';
@@ -32,35 +32,35 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
   const [isRegistering, setIsRegistering] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showProfileSettings, setShowProfileSettings] = useState(false);
-  const [showTeacherRequests, setShowTeacherRequests] = useState(false);
+  const [showAnonymousQuestions, setShowAnonymousQuestions] = useState(false);
   const [showScheduleHistory, setShowScheduleHistory] = useState(false);
   const [showTeacherRequestForm, setShowTeacherRequestForm] = useState(false);
   const [showEventsManagement, setShowEventsManagement] = useState(false);
 
   // Автозаполнение email в форме входа после подтверждения
   useEffect(() => {
-    const confirmedEmail = localStorage.getItem('irfit_confirmed_email');
+    const confirmedEmail = localStorage.getItem('psyhologovo_confirmed_email');
     if (confirmedEmail && !isRegistering) {
       setLoginData(prev => ({ ...prev, email: confirmedEmail }));
       // Очищаем сохраненный email
-      localStorage.removeItem('irfit_confirmed_email');
+      localStorage.removeItem('psyhologovo_confirmed_email');
     }
   }, [isRegistering]);
 
 
   const achievements = [
-    { id: 1, title: 'Первый онлайн урок', description: 'Завершили первое занятие', icon: '🎯', unlocked: true },
-    { id: 2, title: 'Неделя активности', description: 'Пройдено уроков 7 дней подряд', icon: '🔥', unlocked: true },
-    { id: 3, title: 'Марафонец', description: '30 дней активности', icon: '🏃‍♂️', unlocked: false },
-    { id: 4, title: 'Силач', description: 'Заработал 1000 FIT COIN', icon: '💪', unlocked: true },
-    { id: 5, title: 'Кардио мастер', description: '100 уроков отсмотрено', icon: '❤️', unlocked: false },
-    { id: 6, title: 'Йога гуру', description: '50 заданий выполнено', icon: '🧘‍♀️', unlocked: false },
+    { id: 1, title: 'Первая сессия', description: 'Завершили первую консультацию', icon: '🎯', unlocked: true },
+    { id: 2, title: 'Неделя активности', description: 'Посещали сессии 7 дней подряд', icon: '🔥', unlocked: true },
+    { id: 3, title: 'Постоянство', description: '30 дней работы над собой', icon: '🌟', unlocked: false },
+    { id: 4, title: 'Самопознание', description: 'Глубокое понимание себя', icon: '🧠', unlocked: true },
+    { id: 5, title: 'Эмоциональная стабильность', description: '100 дней без тревоги', icon: '💚', unlocked: false },
+    { id: 6, title: 'Внутренняя сила', description: '50 практик самопомощи', icon: '💪', unlocked: false },
   ];
 
   const stats = [
-    { label: 'Уроков завершено', value: '24', icon: Target },
+    { label: 'Сессий завершено', value: '24', icon: Target },
     { label: 'Дней активности', value: '18', icon: Calendar },
-    { label: 'Место в лидерборде', value: '#15', icon: Trophy },
+    { label: 'Прогресс', value: '85%', icon: Trophy },
   ];
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -101,8 +101,8 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
           console.log('Декодированные данные токена:', tokenData);
           
           // Сохраняем JWT токен
-          localStorage.setItem('irfit_token', responseData.token);
-          localStorage.setItem('irfit_is_authenticated', 'true');
+          localStorage.setItem('psyhologovo_token', responseData.token);
+          localStorage.setItem('psyhologovo_is_authenticated', 'true');
           
           const userDataToStore = {
             email: tokenData.email,
@@ -110,13 +110,13 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
             role: tokenData.role,
             userId: tokenData.userId
           };
-          localStorage.setItem('irfit_user_data', JSON.stringify(userDataToStore));
+          localStorage.setItem('psyhologovo_user_data', JSON.stringify(userDataToStore));
           
           // Обновляем пользователя в контексте аутентификации
           updateUserFromToken(responseData.token);
           
           // Автоматически переключаемся на экран профиля
-          localStorage.setItem('irfit_active_screen', 'profile');
+          localStorage.setItem('psyhologovo_active_screen', 'profile');
           
           // Показываем сообщение об успехе
           alert('Вход выполнен успешно! Добро пожаловать в личный кабинет.');
@@ -246,7 +246,7 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
         source: 'irfit_app'
       };
       
-      const webhookResponse = await fetch('https://n8n.bitcoinlimb.com/webhook/register-irfit', {
+              const webhookResponse = await fetch('https://n8n.bitcoinlimb.com/webhook/register-irfit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -292,7 +292,7 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
       case 'teacher':
         return <GraduationCap className="w-4 h-4 text-blue-500" />;
       case 'student':
-        return <User className="w-4 h-4 text-green-500" />;
+        return <User className="w-4 h-4 text-psyhologovo-500" />;
     }
   };
 
@@ -301,22 +301,24 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
       case 'admin':
         return 'Администратор';
       case 'teacher':
-        return 'Учитель';
+        return 'Психолог';
       case 'student':
-        return 'Ученик';
+        return 'Клиент';
       default:
-        return 'Ученик';
+        return 'Клиент';
     }
   };
 
   if (!isAuthenticated) {
     return (
       <div className="max-w-md mx-auto px-4 py-6 md:max-w-lg transition-colors duration-300">
-        <div className={`rounded-2xl p-6 shadow-lg transition-colors duration-300 ${
-          isDark ? 'bg-gray-800' : 'bg-white'
+        <div className={`rounded-2xl p-6 shadow-lg transition-all duration-300 hover:scale-105 ${
+          isDark 
+            ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+            : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
         }`}>
           <div className="text-center mb-6">
-            <div className="w-20 h-20 bg-gradient-to-r from-[#94c356] to-[#7ba045] rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-20 h-20 bg-gradient-to-r from-psyhologovo-500 to-psyhologovo-700 rounded-full flex items-center justify-center mx-auto mb-4">
               <User className="w-10 h-10 text-white" />
             </div>
             <h2 className={`text-2xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>Вход в личный кабинет</h2>
@@ -334,8 +336,8 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
                   required
                   value={loginData.email}
                   onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#94c356] focus:border-transparent transition-all ${
-                    isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent transition-all ${
+                    isDark ? 'bg-psyhologovo-800/30 border-psyhologovo-600 text-white' : 'bg-white border-gray-300 text-gray-800'
                   }`}
                   placeholder="Введите ваш email"
                 />
@@ -351,8 +353,8 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
                     required
                     value={loginData.password}
                     onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                    className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-[#94c356] focus:border-transparent transition-all ${
-                      isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
+                    className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent transition-all ${
+                      isDark ? 'bg-psyhologovo-800/30 border-psyhologovo-600 text-white' : 'bg-white border-gray-300 text-gray-800'
                     }`}
                     placeholder="Введите пароль"
                   />
@@ -369,7 +371,7 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-[#94c356] to-[#7ba045] text-white py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 hover:from-[#7ba045] hover:to-[#94c356]"
+                className="w-full bg-gradient-to-r from-psyhologovo-500 to-psyhologovo-700 text-white py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 hover:from-psyhologovo-600 hover:to-psyhologovo-500"
               >
                 {isLoading ? 'Вход...' : 'Войти'}
               </button>
@@ -385,8 +387,8 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
                   required
                   value={registerData.name}
                   onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#94c356] focus:border-transparent transition-all ${
-                    isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent transition-all ${
+                    isDark ? 'bg-psyhologovo-800/30 border-psyhologovo-600 text-white' : 'bg-white border-gray-300 text-gray-800'
                   }`}
                   placeholder="Введите ваше имя"
                 />
@@ -401,8 +403,8 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
                   required
                   value={registerData.email}
                   onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#94c356] focus:border-transparent transition-all ${
-                    isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent transition-all ${
+                    isDark ? 'bg-psyhologovo-800/30 border-psyhologovo-600 text-white' : 'bg-white border-gray-300 text-gray-800'
                   }`}
                   placeholder="Введите ваш email"
                 />
@@ -417,8 +419,8 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
                   required
                   value={registerData.password}
                   onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
-                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#94c356] focus:border-transparent transition-all ${
-                    isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'
+                  className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent transition-all ${
+                    isDark ? 'bg-psyhologovo-800/30 border-psyhologovo-600 text-white' : 'bg-white border-gray-300 text-gray-800'
                   }`}
                   placeholder="Введите пароль"
                 />
@@ -429,7 +431,7 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-[#94c356] to-[#7ba045] text-white py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 hover:from-[#7ba045] hover:to-[#94c356]"
+                className="w-full bg-gradient-to-r from-psyhologovo-500 to-psyhologovo-700 text-white py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all disabled:opacity-50 hover:from-psyhologovo-600 hover:to-psyhologovo-500"
               >
                 {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
               </button>
@@ -443,7 +445,7 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
               <>
                 <button 
                   onClick={onGoToPasswordReset}
-                  className="text-[#94c356] text-sm hover:underline"
+                  className="text-psyhologovo-500 text-sm hover:underline"
                 >
                   Забыли пароль?
                 </button>
@@ -453,7 +455,7 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
                   </span>
                   <button 
                     onClick={() => setIsRegistering(true)}
-                    className="text-[#94c356] text-sm hover:underline"
+                    className="text-psyhologovo-500 text-sm hover:underline"
                   >
                     Регистрация
                   </button>
@@ -466,8 +468,8 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
                 </span>
                 <button 
                   onClick={() => setIsRegistering(false)}
-                  className="text-[#94c356] text-sm hover:underline"
-                >
+                  className="text-psyhologovo-500 text-sm hover:underline"
+                  >
                   Войти
                 </button>
               </div>
@@ -488,11 +490,11 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
     );
   }
 
-  // Если открыт экран запросов учителей, показываем его
-  if (showTeacherRequests) {
+  // Если открыт экран анонимных вопросов, показываем его
+  if (showAnonymousQuestions) {
     return (
-      <TeacherRequests
-        onBack={() => setShowTeacherRequests(false)}
+      <AnonymousQuestions
+        onBack={() => setShowAnonymousQuestions(false)}
         isDark={isDark}
       />
     );
@@ -531,7 +533,7 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
   return (
     <div className="max-w-md mx-auto px-4 py-6 space-y-6 md:max-w-4xl md:px-8 transition-colors duration-300">
       {/* Profile Header */}
-      <div className="bg-gradient-to-r from-[#94c356] to-[#7ba045] rounded-2xl p-6 text-white">
+      <div className="bg-gradient-to-r from-psyhologovo-500 to-psyhologovo-700 rounded-2xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
@@ -554,28 +556,30 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
           </button>
         </div>
         
-        {/* FIT COIN - только для учеников */}
+        {/* Прогресс - только для клиентов */}
         {user?.role === 'student' && (
           <div className="mt-6 flex items-center justify-between bg-white/10 rounded-xl p-4">
             <div className="flex items-center space-x-2">
-              <Coins className="w-6 h-6 text-yellow-300" />
-              <span className="font-semibold">FIT COIN</span>
+              <Target className="w-6 h-6 text-psyhologovo-300" />
+              <span className="font-semibold">Прогресс</span>
             </div>
-            <div className="text-2xl font-bold">1,250</div>
+            <div className="text-2xl font-bold">85%</div>
           </div>
         )}
       </div>
 
-      {/* Stats - только для учеников */}
+      {/* Статистика - только для клиентов */}
       {user?.role === 'student' && (
         <div className="grid grid-cols-3 gap-4">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
-              <div key={index} className={`rounded-xl p-4 text-center shadow-sm transition-colors duration-300 ${
-                isDark ? 'bg-gray-800' : 'bg-white'
+              <div key={index} className={`rounded-xl p-4 text-center shadow-lg transition-all duration-300 hover:scale-105 ${
+                isDark 
+                  ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+                  : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
               }`}>
-                <Icon className={`w-8 h-8 mx-auto mb-2 text-[#94c356]`} />
+                <Icon className={`w-8 h-8 mx-auto mb-2 text-psyhologovo-500`} />
                 <div className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>{stat.value}</div>
                 <div className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{stat.label}</div>
               </div>
@@ -584,17 +588,19 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
         </div>
       )}
 
-      {/* Achievements - только для учеников */}
+      {/* Достижения - только для клиентов */}
       {user?.role === 'student' && (
-        <div className={`rounded-2xl p-6 transition-colors duration-300 ${
-          isDark ? 'bg-gray-800' : 'bg-white'
+        <div className={`rounded-2xl p-6 shadow-lg transition-all duration-300 hover:scale-105 ${
+          isDark 
+            ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+            : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
         }`}>
           <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>Достижения</h3>
           <div className="grid grid-cols-2 gap-4">
             {achievements.map((achievement) => (
               <div key={achievement.id} className={`flex items-center space-x-3 p-3 rounded-lg transition-colors duration-300 ${
                 achievement.unlocked
-                  ? isDark ? 'bg-[#94c356]/20 border border-[#94c356]/30' : 'bg-[#94c356]/10 border border-[#94c356]/30'
+                  ? isDark ? 'bg-psyhologovo-500/20 border border-psyhologovo-500/30' : 'bg-psyhologovo-500/10 border border-psyhologovo-500/30'
                   : isDark ? 'bg-gray-700' : 'bg-gray-100'
               }`}>
                 <span className="text-2xl">{achievement.icon}</span>
@@ -602,7 +608,7 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
                   <div className={`font-medium text-sm ${isDark ? 'text-white' : 'text-gray-800'}`}>
                     {achievement.title}
                   </div>
-                  <div className={`text-xs ${achievement.unlocked ? (isDark ? 'text-[#94c356]' : 'text-[#94c356]') : (isDark ? 'text-gray-500' : 'text-gray-500')}`}>
+                  <div className={`text-xs ${achievement.unlocked ? (isDark ? 'text-psyhologovo-500' : 'text-psyhologovo-500') : (isDark ? 'text-gray-500' : 'text-gray-500')}`}>
                     {achievement.description}
                   </div>
                 </div>
@@ -612,12 +618,14 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
         </div>
       )}
 
-      {/* Запрос роли учителя - только для учеников */}
+      {/* Дополнительные возможности - только для клиентов */}
       {user?.role === 'student' && (
-        <div className={`rounded-2xl p-6 transition-colors duration-300 ${
-          isDark ? 'bg-gray-800' : 'bg-white'
+        <div className={`rounded-2xl p-6 shadow-lg transition-all duration-300 hover:scale-105 ${
+          isDark 
+            ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+            : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
         }`}>
-          <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>Развитие</h3>
+          <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>Дополнительные возможности</h3>
           <div className="space-y-3">
             <button 
               onClick={() => setShowTeacherRequestForm(true)}
@@ -626,8 +634,8 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
               }`}
             >
               <div className="flex items-center space-x-3">
-                <GraduationCap className={`w-5 h-5 ${isDark ? 'text-blue-400' : 'text-blue-500'}`} />
-                <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Запросить роль учителя</span>
+                <Users className={`w-5 h-5 ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-500'}`} />
+                <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>Задать анонимный вопрос</span>
               </div>
               <ChevronRight className={`w-4 h-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
             </button>
@@ -636,8 +644,10 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
       )}
 
       {/* Settings */}
-      <div className={`rounded-2xl p-6 transition-colors duration-300 ${
-        isDark ? 'bg-gray-800' : 'bg-white'
+      <div className={`rounded-2xl p-6 shadow-lg transition-all duration-300 hover:scale-105 ${
+        isDark 
+          ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+          : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
       }`}>
         <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>Настройки</h3>
         <div className="space-y-3">
@@ -668,35 +678,37 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
 
       {/* Административные функции - только для администраторов */}
       {user?.role === 'admin' && (
-        <div className={`rounded-2xl p-6 transition-colors duration-300 ${
-          isDark ? 'bg-gray-800' : 'bg-white'
+        <div className={`rounded-2xl p-6 shadow-lg transition-all duration-300 hover:scale-105 ${
+          isDark 
+            ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+            : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
         }`}>
           <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>
-            Административные функции
+            Управление центром
           </h3>
           <div className="space-y-4">
-            {/* Запросы на добавление в качестве Учителя */}
+            {/* Анонимные вопросы пользователей */}
             <button
-              onClick={() => setShowTeacherRequests(true)}
+              onClick={() => setShowAnonymousQuestions(true)}
               className={`w-full p-4 rounded-xl border-2 border-dashed transition-all duration-300 ${
                 isDark 
-                  ? 'border-gray-600 hover:border-[#94c356] hover:bg-gray-700/50' 
-                  : 'border-gray-300 hover:border-[#94c356] hover:bg-gray-50'
+                  ? 'border-gray-600 hover:border-psyhologovo-500 hover:bg-gray-700/50' 
+                  : 'border-gray-300 hover:border-psyhologovo-500 hover:bg-gray-50'
               } group`}
             >
               <div className="flex items-center space-x-3">
-                <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center group-hover:bg-[#94c356] transition-colors`}>
+                <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center group-hover:bg-psyhologovo-500 transition-colors`}>
                   <UserPlus className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'} group-hover:text-white transition-colors`} />
                 </div>
                 <div className="flex-1 text-left">
                   <h4 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                    Запросы на добавление в качестве Учителя
+                    Анонимные вопросы пользователей
                   </h4>
                   <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                    Рассмотрение заявок от пользователей
+                    Просмотр и ответы на анонимные вопросы
                   </p>
                 </div>
-                <div className={`w-6 h-6 rounded-full ${isDark ? 'bg-gray-600' : 'bg-gray-300'} flex items-center justify-center group-hover:bg-[#94c356] transition-colors`}>
+                <div className={`w-6 h-6 rounded-full ${isDark ? 'bg-gray-600' : 'bg-gray-300'} flex items-center justify-center group-hover:bg-psyhologovo-500 transition-colors`}>
                   <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
@@ -709,12 +721,12 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
               onClick={() => setShowScheduleHistory(true)}
               className={`w-full p-4 rounded-xl border-2 border-dashed transition-all duration-300 ${
                 isDark 
-                  ? 'border-gray-600 hover:border-[#94c356] hover:bg-gray-700/50' 
-                  : 'border-gray-300 hover:border-[#94c356] hover:bg-gray-50'
+                  ? 'border-gray-600 hover:border-psyhologovo-500 hover:bg-gray-700/50' 
+                  : 'border-gray-300 hover:border-psyhologovo-500 hover:bg-gray-50'
               } group`}
             >
               <div className="flex items-center space-x-3">
-                <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center group-hover:bg-[#94c356] transition-colors`}>
+                <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center group-hover:bg-psyhologovo-500 transition-colors`}>
                   <History className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'} group-hover:text-white transition-colors`} />
                 </div>
                 <div className="flex-1 text-left">
@@ -725,7 +737,7 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
                     История и фильтрация изменений
                   </p>
                 </div>
-                <div className={`w-6 h-6 rounded-full ${isDark ? 'bg-gray-600' : 'bg-gray-300'} flex items-center justify-center group-hover:bg-[#94c356] transition-colors`}>
+                <div className={`w-6 h-6 rounded-full ${isDark ? 'bg-gray-600' : 'bg-gray-300'} flex items-center justify-center group-hover:bg-psyhologovo-500 transition-colors`}>
                   <span className="text-xs font-bold text-white">∞</span>
                 </div>
               </div>
@@ -736,23 +748,23 @@ const Profile: React.FC<ProfileProps> = ({ onShowEmailConfirmation, onForceGoToL
               onClick={() => setShowEventsManagement(true)}
               className={`w-full p-4 rounded-xl border-2 border-dashed transition-all duration-300 ${
                 isDark 
-                  ? 'border-gray-600 hover:border-[#94c356] hover:bg-gray-700/50' 
-                  : 'border-gray-300 hover:border-[#94c356] hover:bg-gray-50'
+                  ? 'border-gray-600 hover:border-psyhologovo-500 hover:bg-gray-700/50' 
+                  : 'border-gray-300 hover:border-psyhologovo-500 hover:bg-gray-50'
               } group`}
             >
               <div className="flex items-center space-x-3">
-                <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center group-hover:bg-[#94c356] transition-colors`}>
+                <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center group-hover:bg-psyhologovo-500 transition-colors`}>
                   <Calendar className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'} group-hover:text-white transition-colors`} />
                 </div>
                 <div className="flex-1 text-left">
                   <h4 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                    Управление событиями
+                    Управление сессиями
                   </h4>
                   <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                    Добавление и редактирование событий
+                    Добавление и редактирование сессий
                   </p>
                 </div>
-                <div className={`w-6 h-6 rounded-full ${isDark ? 'bg-gray-600' : 'bg-gray-300'} flex items-center justify-center group-hover:bg-[#94c356] transition-colors`}>
+                <div className={`w-6 h-6 rounded-full ${isDark ? 'bg-gray-600' : 'bg-gray-300'} flex items-center justify-center group-hover:bg-psyhologovo-500 transition-colors`}>
                   <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>

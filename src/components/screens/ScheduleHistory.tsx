@@ -4,12 +4,12 @@ import { ArrowLeft, Filter, Calendar, User, BookOpen, Search, X } from 'lucide-r
 interface ScheduleItem {
   id: string;
   title: string;
-  teacher: string;
+  psychologist: string;
   date: string;
   start_time: string;
   end_time: string;
   room: string;
-  class_type: string;
+  session_type: string;
   level: string;
   participants: number;
   max_participants: number;
@@ -38,8 +38,8 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
   const [filters, setFilters] = useState({
     dateFrom: '',
     dateTo: '',
-    teacher: '',
-    classType: '',
+    psychologist: '',
+    sessionType: '',
     creator: '',
     updateReason: '',
     searchQuery: ''
@@ -57,7 +57,7 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
   const fetchSchedules = async () => {
     setIsLoadingData(true);
     try {
-      const token = localStorage.getItem('irfit_token');
+      const token = localStorage.getItem('psyhologovo_token');
       
       if (!token) {
         console.error('Токен не найден');
@@ -111,24 +111,24 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
     if (filters.searchQuery) {
       filtered = filtered.filter(schedule =>
         schedule.title.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-        schedule.teacher.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
+        schedule.psychologist.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
         schedule.room.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
         (schedule.created_by_name && schedule.created_by_name.toLowerCase().includes(filters.searchQuery.toLowerCase())) ||
         (schedule.update_reason && schedule.update_reason.toLowerCase().includes(filters.searchQuery.toLowerCase()))
       );
     }
 
-    // Фильтр по учителю
-    if (filters.teacher) {
+    // Фильтр по психологу
+    if (filters.psychologist) {
       filtered = filtered.filter(schedule =>
-        schedule.teacher.toLowerCase().includes(filters.teacher.toLowerCase())
+        schedule.psychologist.toLowerCase().includes(filters.psychologist.toLowerCase())
       );
     }
 
-    // Фильтр по типу занятия
-    if (filters.classType) {
+    // Фильтр по типу сессии
+    if (filters.sessionType) {
       filtered = filtered.filter(schedule =>
-        schedule.class_type.toLowerCase().includes(filters.classType.toLowerCase())
+        schedule.session_type.toLowerCase().includes(filters.sessionType.toLowerCase())
       );
     }
 
@@ -166,8 +166,8 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
     setFilters({
       dateFrom: '',
       dateTo: '',
-      teacher: '',
-      classType: '',
+      psychologist: '',
+      sessionType: '',
       creator: '',
       updateReason: '',
       searchQuery: ''
@@ -198,12 +198,12 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
     });
   };
 
-  const getUniqueTeachers = () => {
-    return [...new Set(schedules.map(s => s.teacher))];
+  const getUniquePsychologists = () => {
+    return [...new Set(schedules.map(s => s.psychologist))];
   };
 
-  const getUniqueClassTypes = () => {
-    return [...new Set(schedules.map(s => s.class_type))];
+  const getUniqueSessionTypes = () => {
+    return [...new Set(schedules.map(s => s.session_type))];
   };
 
   const getUniqueCreators = () => {
@@ -215,24 +215,24 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
   };
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
+    <div className={`min-h-screen ${isDark ? 'bg-gradient-to-br from-psyhologovo-dark-900 via-psyhologovo-dark-800 to-psyhologovo-dark-900 text-white' : 'bg-gradient-to-br from-psyhologovo-50 via-psyhologovo-100 to-psyhologovo-200 text-gray-900'}`}>
       {/* Header */}
-      <div className={`sticky top-0 z-10 ${isDark ? 'bg-gray-800' : 'bg-white'} border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+      <div className={`sticky top-0 z-10 ${isDark ? 'bg-psyhologovo-dark-900/80 backdrop-blur-md' : 'bg-white/80 backdrop-blur-md'} border-b ${isDark ? 'border-psyhologovo-dark-700' : 'border-psyhologovo-300'}`}>
         <div className="flex items-center justify-between p-4">
           <button
             onClick={onBack}
-            className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
+            className={`p-2 rounded-lg ${isDark ? 'hover:bg-psyhologovo-dark-700 text-psyhologovo-400' : 'hover:bg-psyhologovo-100 text-psyhologovo-600'} transition-colors`}
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-lg font-semibold">
-            История изменений расписаний
+          <h1 className={`text-lg font-semibold ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>
+            История изменений сессий
           </h1>
           <div className="flex space-x-2">
             <button
               onClick={fetchSchedules}
               disabled={isLoadingData}
-              className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors disabled:opacity-50`}
+              className={`p-2 rounded-lg ${isDark ? 'hover:bg-psyhologovo-dark-700 text-psyhologovo-400' : 'hover:bg-psyhologovo-100 text-psyhologovo-600'} transition-colors disabled:opacity-50`}
               title="Обновить данные"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -241,7 +241,7 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
             </button>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
+              className={`p-2 rounded-lg ${isDark ? 'hover:bg-psyhologovo-dark-700 text-psyhologovo-400' : 'hover:bg-psyhologovo-100 text-psyhologovo-600'} transition-colors`}
             >
               <Filter className="w-5 h-5" />
             </button>
@@ -253,14 +253,14 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
       <div className="p-6 space-y-6">
         {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-500'}`} />
           <input
             type="text"
-            placeholder="Поиск по названию, учителю или залу..."
+            placeholder="Поиск по названию, психологу или залу..."
             value={filters.searchQuery}
             onChange={(e) => setFilters(prev => ({ ...prev, searchQuery: e.target.value }))}
-            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
-              isDark ? 'bg-gray-800 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+            className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
+              isDark ? 'bg-psyhologovo-dark-800 border-psyhologovo-dark-600 text-white placeholder-psyhologovo-dark-400' : 'bg-white border-psyhologovo-300 text-gray-900 placeholder-psyhologovo-500'
             }`}
           />
         </div>
@@ -269,14 +269,14 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
 
         {/* Filters */}
         {showFilters && (
-          <div className={`rounded-xl p-4 ${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm border ${
-            isDark ? 'border-gray-700' : 'border-gray-200'
+          <div className={`rounded-xl p-4 ${isDark ? 'bg-psyhologovo-dark-800/50' : 'bg-white'} shadow-sm border ${
+            isDark ? 'border-psyhologovo-dark-600' : 'border-psyhologovo-200'
           }`}>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">Фильтры</h3>
+              <h3 className={`font-semibold ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>Фильтры</h3>
               <button
                 onClick={clearFilters}
-                className="text-sm text-[#94c356] hover:underline"
+                className="text-sm text-psyhologovo-500 hover:underline"
               >
                 Очистить все
               </button>
@@ -285,66 +285,66 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Фильтр по дате создания */}
               <div>
-                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
                   Дата создания (от)
                 </label>
                 <input
                   type="date"
                   value={filters.dateFrom}
                   onChange={(e) => setFilters(prev => ({ ...prev, dateFrom: e.target.value }))}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
-                    isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
+                    isDark ? 'bg-psyhologovo-dark-700 border-psyhologovo-dark-600 text-white' : 'bg-white border-psyhologovo-300 text-gray-900'
                   }`}
                 />
               </div>
 
               <div>
-                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
                   Дата создания (до)
                 </label>
                 <input
                   type="date"
                   value={filters.dateTo}
                   onChange={(e) => setFilters(prev => ({ ...prev, dateTo: e.target.value }))}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
-                    isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
+                    isDark ? 'bg-psyhologovo-dark-700 border-psyhologovo-dark-600 text-white' : 'bg-white border-psyhologovo-300 text-gray-900'
                   }`}
                 />
               </div>
 
               {/* Фильтр по учителю */}
               <div>
-                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
                   Учитель
                 </label>
                 <select
-                  value={filters.teacher}
-                  onChange={(e) => setFilters(prev => ({ ...prev, teacher: e.target.value }))}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
-                    isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+                  value={filters.psychologist}
+                  onChange={(e) => setFilters(prev => ({ ...prev, psychologist: e.target.value }))}
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
+                    isDark ? 'bg-psyhologovo-dark-700 border-psyhologovo-dark-600 text-white' : 'bg-white border-psyhologovo-300 text-gray-900'
                   }`}
                 >
-                  <option value="">Все учителя</option>
-                  {getUniqueTeachers().map(teacher => (
-                    <option key={teacher} value={teacher}>{teacher}</option>
+                  <option value="">Все психологи</option>
+                  {getUniquePsychologists().map(psychologist => (
+                    <option key={psychologist} value={psychologist}>{psychologist}</option>
                   ))}
                 </select>
               </div>
 
               {/* Фильтр по типу занятия */}
               <div>
-                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Тип занятия
+                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
+                  Тип сессии
                 </label>
                 <select
-                  value={filters.classType}
-                  onChange={(e) => setFilters(prev => ({ ...prev, classType: e.target.value }))}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
-                    isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+                  value={filters.sessionType}
+                  onChange={(e) => setFilters(prev => ({ ...prev, sessionType: e.target.value }))}
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
+                    isDark ? 'bg-psyhologovo-dark-700 border-psyhologovo-dark-600 text-white' : 'bg-white border-psyhologovo-300 text-gray-900'
                   }`}
                 >
                   <option value="">Все типы</option>
-                  {getUniqueClassTypes().map(type => (
+                  {getUniqueSessionTypes().map(type => (
                     <option key={type} value={type}>{type}</option>
                   ))}
                 </select>
@@ -352,14 +352,14 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
 
               {/* Фильтр по создателю */}
               <div>
-                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
                   Создатель
                 </label>
                 <select
                   value={filters.creator}
                   onChange={(e) => setFilters(prev => ({ ...prev, creator: e.target.value }))}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
-                    isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
+                    isDark ? 'bg-psyhologovo-dark-700 border-psyhologovo-dark-600 text-white' : 'bg-white border-psyhologovo-300 text-gray-900'
                   }`}
                 >
                   <option value="">Все создатели</option>
@@ -371,14 +371,14 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
 
               {/* Фильтр по причине изменения */}
               <div>
-                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>
                   Причина изменения
                 </label>
                 <select
                   value={filters.updateReason}
                   onChange={(e) => setFilters(prev => ({ ...prev, updateReason: e.target.value }))}
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
-                    isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
+                    isDark ? 'bg-psyhologovo-dark-700 border-psyhologovo-dark-600 text-white' : 'bg-white border-psyhologovo-300 text-gray-900'
                   }`}
                 >
                   <option value="">Все причины</option>
@@ -392,8 +392,8 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
         )}
 
         {/* Results Count */}
-        <div className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-          {isLoadingData ? 'Загрузка...' : `Найдено: ${filteredSchedules.length} из ${schedules.length} расписаний`}
+        <div className={`text-sm ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-600'}`}>
+          {isLoadingData ? 'Загрузка...' : `Найдено: ${filteredSchedules.length} из ${schedules.length} сессий`}
         </div>
 
 
@@ -403,30 +403,30 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
                       {filteredSchedules.map((schedule) => (
               <div
                 key={schedule.id}
-                className={`rounded-xl p-4 ${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm border ${
-                  isDark ? 'border-gray-700' : 'border-gray-200'
-                }`}
+                className={`rounded-xl p-4 ${isDark ? 'bg-psyhologovo-dark-800/50' : 'bg-white'} shadow-sm border ${
+                  isDark ? 'border-psyhologovo-dark-600' : 'border-psyhologovo-200'
+                } transition-all duration-300 hover:shadow-md`}
               >
                 {/* Заголовок карточки */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
-                    <h3 className="font-bold text-lg mb-2 text-[#94c356]">{schedule.title}</h3>
+                    <h3 className="font-bold text-lg mb-2 text-psyhologovo-500">{schedule.title}</h3>
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2 text-sm">
-                        <User className="w-4 h-4 text-gray-400" />
-                        <span className="font-medium">{schedule.teacher}</span>
+                        <User className={`w-4 h-4 ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-500'}`} />
+                        <span className={`font-medium ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>{schedule.psychologist}</span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm">
-                        <BookOpen className="w-4 h-4 text-gray-400" />
-                        <span>{schedule.class_type} - {schedule.level}</span>
+                        <BookOpen className={`w-4 h-4 ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-500'}`} />
+                        <span className={isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}>{schedule.session_type} - {schedule.level}</span>
                       </div>
                     </div>
                   </div>
                   <div className="text-right ml-4">
-                    <div className="text-sm font-bold text-[#94c356] mb-1">
+                    <div className="text-sm font-bold text-psyhologovo-500 mb-1">
                       {formatDate(schedule.date)}
                     </div>
-                    <div className="text-xs bg-[#94c356]/10 text-[#94c356] px-2 py-1 rounded-full font-medium">
+                    <div className="text-xs bg-psyhologovo-500/10 text-psyhologovo-500 px-2 py-1 rounded-full font-medium">
                       {schedule.start_time?.substring(0, 5)} - {schedule.end_time?.substring(0, 5)}
                     </div>
                   </div>
@@ -434,47 +434,47 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
 
                 {/* Основная информация */}
                 <div className="grid grid-cols-2 gap-3 mb-4">
-                  <div className={`p-3 rounded-lg ${isDark ? 'bg-gray-700/50' : 'bg-gray-50'}`}>
-                    <div className="text-xs text-gray-500 mb-1">Зал</div>
-                    <div className="font-semibold">{schedule.room}</div>
+                  <div className={`p-3 rounded-lg ${isDark ? 'bg-psyhologovo-dark-700/50' : 'bg-psyhologovo-50'}`}>
+                    <div className={`text-xs mb-1 ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-600'}`}>Зал</div>
+                    <div className={`font-semibold ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>{schedule.room}</div>
                   </div>
-                  <div className={`p-3 rounded-lg ${isDark ? 'bg-gray-700/50' : 'bg-gray-50'}`}>
-                    <div className="text-xs text-gray-500 mb-1">Участники</div>
-                    <div className="font-semibold">{schedule.participants}/{schedule.max_participants}</div>
+                  <div className={`p-3 rounded-lg ${isDark ? 'bg-psyhologovo-dark-700/50' : 'bg-psyhologovo-50'}`}>
+                    <div className={`text-xs mb-1 ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-600'}`}>Участники</div>
+                    <div className={`font-semibold ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>{schedule.participants}/{schedule.max_participants}</div>
                   </div>
                 </div>
 
                 {/* Дополнительная информация */}
                 <div className="grid grid-cols-2 gap-3 mb-4">
-                  <div className={`p-3 rounded-lg ${isDark ? 'bg-gray-700/50' : 'bg-gray-50'}`}>
-                    <div className="text-xs text-gray-500 mb-1">Создано</div>
-                    <div className="font-semibold text-sm">{formatDate(schedule.created_at)}</div>
+                  <div className={`p-3 rounded-lg ${isDark ? 'bg-psyhologovo-dark-700/50' : 'bg-psyhologovo-50'}`}>
+                    <div className={`text-xs mb-1 ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-600'}`}>Создано</div>
+                    <div className={`font-semibold text-sm ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>{formatDate(schedule.created_at)}</div>
                   </div>
-                  <div className={`p-3 rounded-lg ${isDark ? 'bg-gray-700/50' : 'bg-gray-50'}`}>
-                    <div className="text-xs text-gray-500 mb-1">Рейтинг</div>
-                    <div className="font-semibold text-sm">{schedule.rating || 'Нет'}</div>
+                  <div className={`p-3 rounded-lg ${isDark ? 'bg-psyhologovo-dark-700/50' : 'bg-psyhologovo-50'}`}>
+                    <div className={`text-xs mb-1 ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-600'}`}>Рейтинг</div>
+                    <div className={`font-semibold text-sm ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>{schedule.rating || 'Нет'}</div>
                   </div>
                 </div>
 
                 {/* Информация о создателе */}
-                <div className={`p-3 rounded-lg mb-3 ${isDark ? 'bg-blue-900/20 border border-blue-700/30' : 'bg-blue-50 border border-blue-200'}`}>
+                <div className={`p-3 rounded-lg mb-3 ${isDark ? 'bg-psyhologovo-500/20 border border-psyhologovo-500/30' : 'bg-psyhologovo-100 border border-psyhologovo-300'}`}>
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      <span className="text-xs text-blue-600 font-medium">Создано</span>
+                      <div className="w-2 h-2 bg-psyhologovo-500 rounded-full"></div>
+                      <span className={`text-xs font-medium ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>Создано</span>
                     </div>
                     <div className="ml-4 space-y-1">
                       {schedule.created_by_name && schedule.created_by_name.trim() !== '' ? (
-                        <div className="text-xs text-blue-600">
+                        <div className={`text-xs ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>
                           <span className="font-medium">Кем:</span> {schedule.created_by_name}
                           {schedule.created_by_id && (
-                            <span className="text-gray-500 ml-1">(ID: {schedule.created_by_id})</span>
+                            <span className={`ml-1 ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-500'}`}>(ID: {schedule.created_by_id})</span>
                           )}
                         </div>
                       ) : (
-                        <div className="text-xs text-gray-500">Не указано</div>
+                        <div className={`text-xs ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-500'}`}>Не указано</div>
                       )}
-                      <div className="text-xs text-blue-600">
+                      <div className={`text-xs ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>
                         <span className="font-medium">Когда:</span> {formatDate(schedule.created_at)}
                       </div>
                     </div>
@@ -483,28 +483,28 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
 
                 {/* Информация об изменениях */}
                 {schedule.updated_at !== schedule.created_at && (
-                  <div className={`p-3 rounded-lg mb-3 ${isDark ? 'bg-orange-900/20 border border-orange-700/30' : 'bg-orange-50 border border-orange-200'}`}>
+                  <div className={`p-3 rounded-lg mb-3 ${isDark ? 'bg-psyhologovo-600/20 border border-psyhologovo-600/30' : 'bg-psyhologovo-200 border border-psyhologovo-400'}`}>
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                        <span className="text-xs text-orange-600 font-medium">Изменено</span>
+                        <div className="w-2 h-2 bg-psyhologovo-600 rounded-full"></div>
+                        <span className={`text-xs font-medium ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>Изменено</span>
                       </div>
                       <div className="ml-4 space-y-1">
                         {schedule.updated_by_name && schedule.updated_by_name.trim() !== '' ? (
-                          <div className="text-xs text-orange-600">
+                          <div className={`text-xs ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>
                             <span className="font-medium">Кем:</span> {schedule.updated_by_name}
                             {schedule.updated_by_id && (
-                              <span className="text-gray-500 ml-1">(ID: {schedule.updated_by_id})</span>
+                              <span className={`ml-1 ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-500'}`}>(ID: {schedule.updated_by_id})</span>
                             )}
                           </div>
                         ) : (
-                          <div className="text-xs text-gray-500">Не указано</div>
+                          <div className={`text-xs ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-500'}`}>Не указано</div>
                         )}
-                        <div className="text-xs text-orange-600">
+                        <div className={`text-xs ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>
                           <span className="font-medium">Когда:</span> {formatDate(schedule.updated_at)}
                         </div>
                         {schedule.update_reason && (
-                          <div className="text-xs text-orange-600">
+                          <div className={`text-xs ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>
                             <span className="font-medium">Причина:</span> {schedule.update_reason}
                           </div>
                         )}
@@ -515,12 +515,12 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
 
                 {/* Статус */}
                 <div className={`p-3 rounded-lg ${schedule.is_active ? 
-                  (isDark ? 'bg-green-900/20 border border-green-700/30' : 'bg-green-50 border border-green-200') :
+                  (isDark ? 'bg-psyhologovo-500/20 border border-psyhologovo-500/30' : 'bg-psyhologovo-100 border border-psyhologovo-300') :
                   (isDark ? 'bg-red-900/20 border border-red-700/30' : 'bg-red-50 border border-red-200')
                 }`}>
                   <div className="flex items-center space-x-2">
-                    <div className={`w-2 h-2 rounded-full ${schedule.is_active ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                    <span className={`text-xs font-medium ${schedule.is_active ? 'text-green-600' : 'text-red-600'}`}>
+                    <div className={`w-2 h-2 rounded-full ${schedule.is_active ? 'bg-psyhologovo-500' : 'bg-red-500'}`}></div>
+                    <span className={`text-xs font-medium ${schedule.is_active ? (isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600') : 'text-red-600'}`}>
                       Статус: {schedule.is_active ? 'Активно' : 'Неактивно'}
                     </span>
                   </div>
@@ -529,16 +529,16 @@ const ScheduleHistory: React.FC<ScheduleHistoryProps> = ({ onBack, isDark }) => 
             ))}
 
           {isLoadingData ? (
-            <div className={`text-center py-12 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+            <div className={`text-center py-12 ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-500'}`}>
               <div className="text-6xl mb-4">⏳</div>
-              <p className="text-lg">Загрузка расписаний...</p>
-              <p className="text-sm">Пожалуйста, подождите</p>
+              <p className={`text-lg ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>Загрузка расписаний...</p>
+              <p className={`text-sm ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>Пожалуйста, подождите</p>
             </div>
           ) : filteredSchedules.length === 0 ? (
-            <div className={`text-center py-12 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+            <div className={`text-center py-12 ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-500'}`}>
               <div className="text-6xl mb-4">📋</div>
-              <p className="text-lg">Расписания не найдены</p>
-              <p className="text-sm">Попробуйте изменить фильтры поиска</p>
+              <p className={`text-lg ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>Расписания не найдены</p>
+              <p className={`text-sm ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>Попробуйте изменить фильтры поиска</p>
             </div>
           ) : null}
         </div>

@@ -192,12 +192,12 @@ const ScheduleCalendar: React.FC = () => {
       } catch (error) {
         console.error('Ошибка загрузки расписания:', error);
         
-        // Проверяем, является ли ошибка HTTP 401 (Unauthorized)
-        if (error instanceof Error && error.message.includes('401')) {
-          setError('Чтобы просматривать расписание зарегистрируйтесь или войдите в личный кабинет');
-        } else {
-          setError(`Ошибка загрузки расписания: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`);
-        }
+        // Проверяем, является ли ошибка HTTP 401 (Unauthorized) - временно отключено
+        // if (error instanceof Error && error.message.includes('401')) {
+        //   setError('Чтобы просматривать расписание зарегистрируйтесь или войдите в личный кабинет');
+        // } else {
+        //   setError(`Ошибка загрузки расписания: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`);
+        // }
       } finally {
         setIsLoading(false);
       }
@@ -242,10 +242,10 @@ const ScheduleCalendar: React.FC = () => {
   return (
     <div className="max-w-md mx-auto px-4 py-6 md:max-w-4xl md:px-8 transition-colors duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-8">
         <div>
           <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>
-            Расписание
+            Расписание сессий
           </h2>
 
         </div>
@@ -257,7 +257,7 @@ const ScheduleCalendar: React.FC = () => {
               className={`px-3 sm:px-4 py-2 sm:py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-300 text-sm flex items-center justify-center space-x-2 ${
                 showScheduleEditor 
                   ? 'bg-gradient-to-r from-gray-500 to-gray-600 text-white hover:from-gray-600 hover:to-gray-700' 
-                  : 'bg-gradient-to-r from-[#94c356] to-[#7ba045] text-white hover:from-[#7ba045] hover:to-[#94c356]'
+                  : 'bg-gradient-to-r from-psyhologovo-500 to-psyhologovo-700 text-white hover:from-psyhologovo-600 hover:to-psyhologovo-800'
               }`}
             >
               {showScheduleEditor ? (
@@ -272,7 +272,7 @@ const ScheduleCalendar: React.FC = () => {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
-                  <span className="whitespace-nowrap">Редактировать расписание</span>
+                  <span className="whitespace-nowrap">Редактировать расписание сессий</span>
                 </>
               )}
             </button>
@@ -292,7 +292,7 @@ const ScheduleCalendar: React.FC = () => {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
-                <span>Добавить занятие</span>
+                <span>Добавить сессию</span>
               </button>
             )}
           </div>
@@ -302,13 +302,15 @@ const ScheduleCalendar: React.FC = () => {
       {/* Форма редактирования/добавления занятия */}
       {editingItem && isEditingMode && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-start justify-center pt-2 pb-20 px-4 transition-all duration-300">
-          <div className={`w-full max-w-4xl max-h-[85vh] overflow-y-auto rounded-xl shadow-sm transition-all duration-300 ${
-            isDark ? 'bg-gray-800' : 'bg-white'
+          <div className={`w-full max-w-4xl max-h-[85vh] overflow-y-auto rounded-xl shadow-lg transition-all duration-300 ${
+            isDark 
+              ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+              : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
           }`}>
-            <div className={`p-6 border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+                          <div className={`p-6 border-b ${isDark ? 'border-psyhologovo-700' : 'border-psyhologovo-300'}`}>
               <div className="flex items-center justify-between">
                 <h3 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                  {editingItem.id ? 'Редактировать занятие' : 'Добавить новое занятие'}
+                  {editingItem.id ? 'Редактировать сессию' : 'Добавить новую сессию'}
                 </h3>
                 <button
                   onClick={() => {
@@ -332,25 +334,25 @@ const ScheduleCalendar: React.FC = () => {
                     type="text"
                     value={editingItem.title || ''}
                     onChange={(e) => setEditingItem({...editingItem, title: e.target.value})}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                       isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
                     }`}
-                    placeholder="Введите название занятия"
+                    placeholder="Введите название сессии"
                   />
                 </div>
                 
                 <div>
                   <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                    Учитель
+                    Психолог
                   </label>
                   <input
                     type="text"
                     value={editingItem.teacher || (isTeacher ? user?.name || '' : '')}
                     onChange={(e) => setEditingItem({...editingItem, teacher: e.target.value})}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                       isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
                     }`}
-                    placeholder="Введите имя учителя"
+                    placeholder="Введите имя психолога"
                     readOnly={isTeacher}
                   />
                 </div>
@@ -363,7 +365,7 @@ const ScheduleCalendar: React.FC = () => {
                     type="text"
                     value={editingItem.room || ''}
                     onChange={(e) => setEditingItem({...editingItem, room: e.target.value})}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                       isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
                     }`}
                     placeholder="Введите номер аудитории"
@@ -372,16 +374,16 @@ const ScheduleCalendar: React.FC = () => {
                 
                 <div>
                   <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                    Тип занятия
+                    Тип сессии
                   </label>
                   <input
                     type="text"
                     value={editingItem.class_type || ''}
                     onChange={(e) => setEditingItem({...editingItem, class_type: e.target.value})}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                       isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
                     }`}
-                    placeholder="Например: Йога, Силовая"
+                    placeholder="Например: Индивидуальная, Групповая"
                   />
                 </div>
                 
@@ -392,7 +394,7 @@ const ScheduleCalendar: React.FC = () => {
                   <select
                     value={editingItem.level || ''}
                     onChange={(e) => setEditingItem({...editingItem, level: e.target.value})}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                       isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
                     }`}
                   >
@@ -411,7 +413,7 @@ const ScheduleCalendar: React.FC = () => {
                     type="number"
                     value={editingItem.max_participants || ''}
                     onChange={(e) => setEditingItem({...editingItem, max_participants: parseInt(e.target.value) || 0})}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                       isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
                     }`}
                     placeholder="Введите количество"
@@ -426,7 +428,7 @@ const ScheduleCalendar: React.FC = () => {
                     type="date"
                     value={editingItem.date ? editingItem.date.split('T')[0] : ''}
                     onChange={(e) => setEditingItem({...editingItem, date: e.target.value})}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                       isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
                     }`}
                   />
@@ -630,12 +632,12 @@ const ScheduleCalendar: React.FC = () => {
                   className={`px-4 py-2 rounded-lg transition-colors ${
                     isSaving
                       ? 'bg-gray-400 cursor-not-allowed text-white'
-                      : 'bg-[#94c356] hover:bg-[#7ba045] text-white'
+                      : 'bg-psyhologovo-500 hover:bg-psyhologovo-600 text-white'
                   }`}
                 >
                   {isSaving 
                     ? (editingItem.id ? 'Сохранение...' : 'Создание...') 
-                    : (editingItem.id ? 'Сохранить изменения' : 'Создать занятие')
+                    : (editingItem.id ? 'Сохранить изменения' : 'Создать сессию')
                   }
                 </button>
               </div>
@@ -650,24 +652,24 @@ const ScheduleCalendar: React.FC = () => {
       {showScheduleEditor && (isAdmin || isTeacher) && !isEditingMode && (
         <div className="mb-6">
           <div className="mb-4">
-            <h3 className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
-              Все занятия для редактирования
+            <h3 className={`text-lg font-semibold ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>
+              Все сессии для редактирования
             </h3>
             
             {/* Фильтры */}
-            <div className={`mt-4 p-4 rounded-xl ${isDark ? 'bg-gray-700' : 'bg-gray-50'} border ${isDark ? 'border-gray-600' : 'border-gray-200'}`}>
+            <div className={`mt-4 p-4 rounded-xl ${isDark ? 'bg-psyhologovo-dark-700/50' : 'bg-psyhologovo-50'} border ${isDark ? 'border-psyhologovo-dark-600' : 'border-psyhologovo-200'}`}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Переключатель фильтра занятий */}
                 <div className="flex items-center space-x-3">
                   <select
                     value={showOnlyMyClasses ? 'my' : 'all'}
                     onChange={(e) => setShowOnlyMyClasses(e.target.value === 'my')}
-                    className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent text-sm ${
-                      isDark ? 'bg-gray-600 border-gray-500 text-white' : 'bg-white border-gray-300 text-gray-900'
+                    className={`px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent text-sm ${
+                      isDark ? 'bg-psyhologovo-dark-600 border-psyhologovo-dark-500 text-white' : 'bg-white border-psyhologovo-300 text-gray-900'
                     }`}
                   >
-                    <option value="all">Все занятия</option>
-                    <option value="my">Только мои занятия</option>
+                    <option value="all">Все сессии</option>
+                    <option value="my">Только мои сессии</option>
                   </select>
                 </div>
 
@@ -678,8 +680,8 @@ const ScheduleCalendar: React.FC = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Поиск по названию..."
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent text-sm ${
-                      isDark ? 'bg-gray-600 border-gray-500 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent text-sm ${
+                      isDark ? 'bg-psyhologovo-dark-600 border-psyhologovo-dark-500 text-white placeholder-psyhologovo-dark-400' : 'bg-white border-psyhologovo-300 text-gray-900 placeholder-psyhologovo-500'
                     }`}
                   />
                 </div>
@@ -689,27 +691,27 @@ const ScheduleCalendar: React.FC = () => {
                   <select
                     value={filterType}
                     onChange={(e) => setFilterType(e.target.value)}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent text-sm ${
-                      isDark ? 'bg-gray-600 border-gray-500 text-white' : 'bg-white border-gray-300 text-gray-900'
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent text-sm ${
+                      isDark ? 'bg-psyhologovo-dark-600 border-psyhologovo-dark-500 text-white' : 'bg-white border-psyhologovo-300 text-gray-900'
                     }`}
                   >
                     <option value="all">Все типы</option>
-                    <option value="Йога">Йога</option>
-                    <option value="Силовая">Силовая</option>
-                    <option value="Кардио">Кардио</option>
-                    <option value="Пилатес">Пилатес</option>
-                    <option value="Стретчинг">Стретчинг</option>
+                    <option value="Индивидуальная">Индивидуальная</option>
+                    <option value="Групповая">Групповая</option>
+                    <option value="Семейная">Семейная</option>
+                    <option value="Онлайн">Онлайн</option>
+                    <option value="Офлайн">Офлайн</option>
                   </select>
                 </div>
               </div>
 
               {/* Счетчик показанных занятий */}
-              <div className="mt-3 pt-3 border-t border-gray-300 dark:border-gray-600">
-                <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+              <div className={`mt-3 pt-3 border-t ${isDark ? 'border-psyhologovo-dark-600' : 'border-psyhologovo-300'}`}>
+                <p className={`text-sm ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>
                   {showOnlyMyClasses ? (
-                    <>Показано <span className="font-semibold text-[#94c356]">{getFilteredScheduleData().length}</span> из <span className="font-semibold">{scheduleData.filter(item => item.created_by_id === user?.id).length}</span> моих занятий</>
+                    <>Показано <span className="font-semibold text-psyhologovo-500">{getFilteredScheduleData().length}</span> из <span className="font-semibold">{scheduleData.filter(item => item.created_by_id === user?.id).length}</span> моих сессий</>
                   ) : (
-                    <>Показано <span className="font-semibold text-[#94c356]">{getFilteredScheduleData().length}</span> из <span className="font-semibold">{scheduleData.length}</span> всех занятий</>
+                    <>Показано <span className="font-semibold text-psyhologovo-500">{getFilteredScheduleData().length}</span> из <span className="font-semibold">{scheduleData.length}</span> всех сессий</>
                   )}
                 </p>
               </div>
@@ -718,15 +720,17 @@ const ScheduleCalendar: React.FC = () => {
           <div className="space-y-4">
             {getFilteredScheduleData().length > 0 ? (
               getFilteredScheduleData().map((item) => (
-                <div key={item.id} className={`rounded-xl p-4 shadow-sm transition-colors duration-300 ${
-                  isDark ? 'bg-gray-800' : 'bg-white'
+                <div key={item.id} className={`rounded-xl p-4 shadow-lg transition-all duration-300 hover:scale-105 ${
+                  isDark 
+                    ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+                    : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
                 }`}>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h4 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                      <h4 className={`font-semibold ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>
                         {item.title}
                       </h4>
-                      <div className={`text-sm mt-2 space-y-1 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                      <div className={`text-sm mt-2 space-y-1 ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>
                         <p><span className="font-medium">Учитель:</span> {item.teacher || 'Не указан'}</p>
                         <p><span className="font-medium">Аудитория:</span> {item.room || 'Не указана'}</p>
                         <p><span className="font-medium">Тип:</span> {item.class_type || 'Не указан'}</p>
@@ -746,8 +750,8 @@ const ScheduleCalendar: React.FC = () => {
 
                         {/* Отображение ссылок, если они есть */}
                         {(item.lesson_link || item.recorded_lesson_link) && (
-                          <div className="mt-3 pt-3 border-t border-gray-300 dark:border-gray-600">
-                            <p className="font-medium mb-2">Ссылки:</p>
+                          <div className={`mt-3 pt-3 border-t ${isDark ? 'border-psyhologovo-dark-600' : 'border-psyhologovo-300'}`}>
+                            <p className={`font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>Ссылки:</p>
                             <div className="flex flex-wrap gap-2">
                               {item.lesson_link && (
                                 <a
@@ -765,7 +769,7 @@ const ScheduleCalendar: React.FC = () => {
                                   href={item.recorded_lesson_link}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className={`px-3 py-1 rounded-lg text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors flex items-center space-x-1`}
+                                  className={`px-3 py-1 rounded-lg text-xs font-medium bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors flex items-center space-x-2`}
                                 >
                                   <span>📹</span>
                                   <span>Запись урока</span>
@@ -800,7 +804,7 @@ const ScheduleCalendar: React.FC = () => {
                                 setDeletingItem(item.id);
                                 
                                 // Получаем JWT токен
-                                const token = localStorage.getItem('irfit_token');
+                                const token = localStorage.getItem('psyhologovo_token');
                                 if (!token) {
                                   alert('Ошибка: пользователь не авторизован');
                                   return;
@@ -861,13 +865,13 @@ const ScheduleCalendar: React.FC = () => {
                 </div>
               ))
             ) : (
-              <div className={`text-center py-8 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+              <div className={`text-center py-8 ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>
                 {scheduleData.length === 0 ? (
-                  <p>Занятия не найдены</p>
+                  <p className={isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}>Занятия не найдены</p>
                 ) : (
                   <div>
-                    <p className="text-lg font-medium mb-2">По вашему запросу ничего не найдено</p>
-                    <p className="text-sm">Попробуйте изменить фильтры поиска</p>
+                    <p className={`text-lg font-medium mb-2 ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>По вашему запросу ничего не найдено</p>
+                    <p className={`text-sm ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>Попробуйте изменить фильтры поиска</p>
                   </div>
                 )}
               </div>
@@ -890,13 +894,17 @@ const ScheduleCalendar: React.FC = () => {
             <div className="space-y-6">
               {/* Admin/Teacher Controls - только если не выбрана дата */}
               {(isAdmin || isTeacher) && (
-                <div className={`rounded-xl p-4 ${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm`}>
+                <div className={`rounded-xl p-4 shadow-lg transition-all duration-300 hover:scale-105 ${
+                  isDark 
+                    ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+                    : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
+                }`}>
                   <div>
                     <h3 className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                      {isAdmin ? 'Управление расписанием' : 'Мои занятия'}
+                      {isAdmin ? 'Управление расписанием сессий' : 'Мои сессии'}
                     </h3>
                     <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                      {isAdmin ? 'Полный контроль над расписанием института' : 'Управление вашими занятиями'}
+                      {isAdmin ? 'Полный контроль над расписанием психологического центра' : 'Управление вашими сессиями'}
                     </p>
                   </div>
                 </div>
@@ -908,19 +916,19 @@ const ScheduleCalendar: React.FC = () => {
                 scheduleData={scheduleData}
               />
 
-              {/* Error Display */}
-              {error && (
+              {/* Error Display - временно отключен */}
+              {/* {error && (
                 <div className={`rounded-xl p-4 ${isDark ? 'bg-red-900/20 border border-red-600/30' : 'bg-red-50 border border-red-200'} shadow-sm`}>
                   <div className="text-center">
                     <p className={`text-sm ${isDark ? 'text-red-400' : 'text-red-700'}`}>{error}</p>
                   </div>
                 </div>
-              )}
+              )} */}
 
               {/* Loading State */}
               {isLoading && (
                 <div className="text-center py-8">
-                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#94c356]"></div>
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-psyhologovo-500"></div>
                   <p className={`mt-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                     Загрузка расписания...
                   </p>
@@ -928,11 +936,15 @@ const ScheduleCalendar: React.FC = () => {
               )}
 
               {/* User Hint */}
-              <div className={`bg-gradient-to-r from-[#94c356]/10 to-[#7ba045]/10 rounded-xl p-4 border border-[#94c356]/20`}>
-                <h3 className="font-semibold mb-2 text-[#94c356]">📅 Подсказка</h3>
-                <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                  Нажмите на любой день в календаре, чтобы увидеть информацию о занятиях, времени проведения и учителе.
-                </p>
+              <div className={`rounded-xl p-4 shadow-lg transition-all duration-300 hover:scale-105 ${
+                isDark 
+                  ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+                  : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
+              }`}>
+                <h3 className="font-semibold mb-2 text-psyhologovo-500">📅 Подсказка</h3>
+                                  <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                    Нажмите на любой день в календаре, чтобы увидеть информацию о психологических сессиях, времени проведения и специалисте.
+                  </p>
               </div>
             </div>
           )}

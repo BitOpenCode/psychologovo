@@ -160,7 +160,7 @@ const ChangePasswordConfirmation: React.FC<ChangePasswordConfirmationProps> = ({
   return (
     <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
       {/* Header */}
-      <div className={`sticky top-0 z-10 ${isDark ? 'bg-gray-800' : 'bg-white'} border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+      <div className={`sticky top-0 z-10 ${isDark ? 'bg-psyhologovo-900/50' : 'bg-psyhologovo-100/50'} border-b ${isDark ? 'border-psyhologovo-700' : 'border-psyhologovo-300'}`}>
         <div className="flex items-center justify-between p-4">
           <button
             onClick={onBack}
@@ -178,7 +178,11 @@ const ChangePasswordConfirmation: React.FC<ChangePasswordConfirmationProps> = ({
       {/* Content */}
       <div className="p-6 space-y-6">
         {/* Code Verification and Password Input Step */}
-        <div className={`rounded-xl p-6 ${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm`}>
+        <div className={`rounded-xl p-6 shadow-lg transition-all duration-300 hover:scale-105 ${
+          isDark 
+            ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+            : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
+        }`}>
           <div className="text-center mb-6">
             <div className="text-4xl mb-4">📧</div>
             <h2 className="text-xl font-bold mb-2">Подтвердите ваш email</h2>
@@ -197,7 +201,7 @@ const ChangePasswordConfirmation: React.FC<ChangePasswordConfirmationProps> = ({
                 value={confirmationCode}
                 onChange={(e) => setConfirmationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 placeholder="Введите 6-значный код"
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent text-center text-lg tracking-widest ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent text-center text-lg tracking-widest ${
                   isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
                 }`}
                 maxLength={6}
@@ -215,7 +219,7 @@ const ChangePasswordConfirmation: React.FC<ChangePasswordConfirmationProps> = ({
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Минимум 6 символов"
-                  className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+                  className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                     isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
                   }`}
                   minLength={6}
@@ -242,7 +246,7 @@ const ChangePasswordConfirmation: React.FC<ChangePasswordConfirmationProps> = ({
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Повторите новый пароль"
-                  className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-[#94c356] focus:border-transparent ${
+                  className={`w-full px-12 border rounded-lg focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent ${
                     isDark ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'
                   }`}
                   minLength={6}
@@ -279,7 +283,7 @@ const ChangePasswordConfirmation: React.FC<ChangePasswordConfirmationProps> = ({
                 className={`flex-1 px-4 py-3 rounded-lg transition-colors ${
                   isLoading
                     ? 'bg-gray-400 cursor-not-allowed text-white'
-                    : `${isDark ? 'bg-gray-600 hover:bg-gray-500 text-white' : 'bg-gray-200 hover:bg-gray-300 text-gray-800'}`
+                    : `${isDark ? 'bg-psyhologovo-600 hover:bg-psyhologovo-500 text-white' : 'bg-psyhologovo-200 hover:bg-psyhologovo-300 text-psyhologovo-800'}`
                 }`}
               >
                 {isLoading ? 'Отправка...' : 'Отправить код повторно'}
@@ -290,7 +294,7 @@ const ChangePasswordConfirmation: React.FC<ChangePasswordConfirmationProps> = ({
                 className={`flex-1 px-4 py-3 rounded-lg transition-colors ${
                   isLoading || confirmationCode.length !== 6 || !newPassword || !confirmPassword || !passwordsMatch || newPassword.length < 6
                     ? 'bg-gray-400 cursor-not-allowed text-white'
-                    : 'bg-[#94c356] hover:bg-[#7ba045] text-white'
+                    : 'bg-psyhologovo-500 hover:bg-psyhologovo-600 text-white'
                 }`}
               >
                 {isLoading ? 'Изменение...' : 'Изменить пароль'}

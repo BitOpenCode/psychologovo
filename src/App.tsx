@@ -16,7 +16,7 @@ function App() {
   const { user } = useAuth();
   const [activeScreen, setActiveScreen] = useState<'home' | 'courses' | 'schedule' | 'profile' | 'email-confirmation' | 'password-reset'>(() => {
     // Восстанавливаем активный экран из localStorage
-    const savedScreen = localStorage.getItem('irfit_active_screen');
+    const savedScreen = localStorage.getItem('psyhologovo_active_screen');
     return (savedScreen as 'home' | 'courses' | 'schedule' | 'profile' | 'email-confirmation' | 'password-reset') || 'home';
   });
 
@@ -36,17 +36,17 @@ function App() {
   const forceGoToLogin = (confirmedEmail?: string) => {
     setActiveScreen('profile');
     setEmailConfirmationData(null);
-    localStorage.setItem('irfit_active_screen', 'profile');
+    localStorage.setItem('psyhologovo_active_screen', 'profile');
     // Сохраняем подтвержденный email для автозаполнения формы входа
     if (confirmedEmail) {
-      localStorage.setItem('irfit_confirmed_email', confirmedEmail);
+      localStorage.setItem('psyhologovo_confirmed_email', confirmedEmail);
     }
   };
 
   // Функция для перехода к экрану восстановления пароля
   const goToPasswordReset = () => {
     setActiveScreen('password-reset');
-    localStorage.setItem('irfit_active_screen', 'password-reset');
+    localStorage.setItem('psyhologovo_active_screen', 'password-reset');
   };
 
   useEffect(() => {
@@ -56,7 +56,7 @@ function App() {
 
   // Сохраняем активный экран в localStorage при изменении
   useEffect(() => {
-    localStorage.setItem('irfit_active_screen', activeScreen);
+    localStorage.setItem('psyhologovo_active_screen', activeScreen);
     }, [activeScreen]);
 
   // Блокируем скролл body при открытых модалках
@@ -75,7 +75,7 @@ function App() {
   // Слушаем изменения в localStorage для обновления активного экрана
   useEffect(() => {
     const handleStorageChange = () => {
-      const savedScreen = localStorage.getItem('irfit_active_screen');
+      const savedScreen = localStorage.getItem('psyhologovo_active_screen');
       if (savedScreen && savedScreen !== activeScreen) {
         setActiveScreen(savedScreen as 'home' | 'courses' | 'schedule' | 'profile' | 'email-confirmation');
       }
@@ -136,17 +136,7 @@ function App() {
 
     if (activeScreen === 'password-reset') {
       return (
-        <>
-          <Profile 
-            onShowEmailConfirmation={(data) => {
-              setEmailConfirmationData(data);
-              setActiveScreen('email-confirmation');
-            }}
-            onForceGoToLogin={forceGoToLogin}
-            onGoToPasswordReset={goToPasswordReset}
-          />
-          <PasswordReset onBack={() => setActiveScreen('profile')} />
-        </>
+        <PasswordReset onBack={() => setActiveScreen('profile')} />
       );
     }
 
@@ -155,10 +145,10 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-orange-50 to-blue-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-psyhologovo-50 via-psyhologovo-100 to-psyhologovo-200">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Загрузка IRFIT APP...</p>
+          <div className="w-16 h-16 border-4 border-psyhologovo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Загрузка Психологово...</p>
         </div>
       </div>
     );
@@ -184,26 +174,29 @@ function App() {
   return (
     <div className={`min-h-screen transition-colors duration-300 ${
       isDark 
-        ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' 
-        : 'bg-gradient-to-br from-purple-50 via-orange-50 to-blue-50'
+        ? 'bg-gradient-to-br from-psyhologovo-dark-900 via-psyhologovo-dark-800 to-psyhologovo-dark-900' 
+        : 'bg-gradient-to-br from-psyhologovo-50 via-psyhologovo-100 to-psyhologovo-200'
     }`}>
       {/* Header */}
       <header className={`backdrop-blur-md shadow-sm sticky top-0 z-40 transition-colors duration-300 ${
-        isDark ? 'bg-gray-900/80' : 'bg-white/80'
+        isDark ? 'bg-psyhologovo-dark-900/80' : 'bg-white/80'
       }`}>
         <div className="max-w-md mx-auto px-4 py-4 md:max-w-4xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#94c356] shadow-lg">
+              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-psyhologovo-500 shadow-lg">
                 <img 
                   src={LOGO_PATH} 
-                  alt="IRFit Logo" 
+                  alt="Психологово π Logo" 
                   className="w-full h-full object-cover"
                 />
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-[#94c356] to-[#7ba045] bg-clip-text text-transparent">
-                IRFIT
+              <h1 className="text-xl font-bold bg-gradient-to-r from-psyhologovo-500 to-psyhologovo-700 bg-clip-text text-transparent">
+                ПСИХОЛОГОВО
               </h1>
+              <p className="text-xs text-psyhologovo-600 font-medium">
+                для тех, кто готов встретиться с собой настоящим
+              </p>
             </div>
             <ThemeToggle />
           </div>

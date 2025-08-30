@@ -5,9 +5,9 @@ import { useTheme } from '../contexts/ThemeContext';
 interface ScheduleItem {
   id: number;
   title: string;
-  teacher: string;
+  psychologist: string;
   room: string;
-  class_type: string;
+  session_type: string;
   level: string;
   participants: number;
   max_participants: number;
@@ -86,7 +86,7 @@ const Calendar: React.FC<CalendarProps> = ({ onDateSelect, scheduleData = [] }) 
     return date.toDateString() === today.toDateString();
   };
 
-  const hasWorkout = (date: Date) => {
+  const hasSession = (date: Date) => {
     if (!scheduleData || scheduleData.length === 0) {
       return false;
     }
@@ -120,8 +120,10 @@ const Calendar: React.FC<CalendarProps> = ({ onDateSelect, scheduleData = [] }) 
   const days = getDaysInMonth(currentDate);
 
   return (
-    <div className={`rounded-2xl p-6 shadow-sm transition-colors duration-300 ${
-      isDark ? 'bg-gray-800' : 'bg-white'
+    <div className={`rounded-2xl p-6 shadow-lg transition-all duration-300 hover:scale-105 ${
+      isDark 
+        ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+        : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
     }`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -160,7 +162,7 @@ const Calendar: React.FC<CalendarProps> = ({ onDateSelect, scheduleData = [] }) 
       {/* Calendar grid */}
       <div className="grid grid-cols-7 gap-2">
         {days.map((day, index) => {
-          const isWorkoutDay = hasWorkout(day.date);
+          const isSessionDay = hasSession(day.date);
           const isTodayDate = isToday(day.date);
           
           return (
@@ -174,26 +176,26 @@ const Calendar: React.FC<CalendarProps> = ({ onDateSelect, scheduleData = [] }) 
               className={`aspect-square flex items-center justify-center text-sm rounded-lg transition-all relative
                 ${day.isCurrentMonth 
                   ? isDark
-                    ? 'text-gray-200 hover:bg-gray-700 hover:text-[#94c356]'
-                    : 'text-gray-800 hover:bg-[#94c356]/10 hover:text-[#94c356]'
+                    ? 'text-gray-200 hover:bg-gray-700 hover:text-psyhologovo-500'
+                    : 'text-gray-800 hover:bg-psyhologovo-500/10 hover:text-psyhologovo-500'
                   : isDark
                     ? 'text-gray-600'
                     : 'text-gray-300'
                 }
                 ${isTodayDate 
-                  ? 'bg-gradient-to-r from-[#94c356] to-[#7ba045] text-white font-semibold' 
+                  ? 'bg-gradient-to-r from-psyhologovo-500 to-psyhologovo-700 text-white font-semibold' 
                   : ''
                 }
-                ${isWorkoutDay && !isTodayDate 
+                ${isSessionDay && !isTodayDate 
                   ? isDark
-                    ? 'bg-[#94c356]/30 text-[#94c356] font-medium'
-                    : 'bg-[#94c356]/20 text-[#94c356] font-medium'
+                    ? 'bg-psyhologovo-500/30 text-psyhologovo-500 font-medium'
+                    : 'bg-psyhologovo-500/20 text-psyhologovo-500 font-medium'
                   : ''
                 }`}
             >
               {day.date.getDate()}
-              {isWorkoutDay && (
-                <div className="absolute bottom-1 w-1.5 h-1.5 bg-[#94c356] rounded-full"></div>
+              {isSessionDay && (
+                <div className="absolute bottom-1 w-1.5 h-1.5 bg-psyhologovo-500 rounded-full"></div>
               )}
             </button>
           );
@@ -203,14 +205,14 @@ const Calendar: React.FC<CalendarProps> = ({ onDateSelect, scheduleData = [] }) 
       {/* Legend */}
       <div className="flex items-center justify-center space-x-6 mt-6 text-xs">
         <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-gradient-to-r from-[#94c356] to-[#7ba045] rounded-full"></div>
+          <div className="w-3 h-3 bg-gradient-to-r from-psyhologovo-500 to-psyhologovo-700 rounded-full"></div>
           <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Сегодня</span>
         </div>
         <div className="flex items-center space-x-2">
           <div className={`w-3 h-3 rounded-full border ${
-            isDark ? 'bg-[#94c356]/30 border-[#94c356]' : 'bg-[#94c356]/20 border-[#94c356]'
+            isDark ? 'bg-psyhologovo-500/30 border-psyhologovo-500' : 'bg-psyhologovo-500/20 border-psyhologovo-500'
           }`}></div>
-          <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Есть занятия</span>
+          <span className={isDark ? 'text-gray-400' : 'text-gray-600'}>Есть сессии</span>
         </div>
       </div>
     </div>

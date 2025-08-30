@@ -27,7 +27,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onBack }) => {
     }
 
     try {
-      const token = localStorage.getItem('irfit_token');
+      const token = localStorage.getItem('psyhologovo_token');
       if (!token) {
         setMessage('Ошибка: пользователь не авторизован');
         setMessageType('error');
@@ -35,7 +35,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onBack }) => {
       }
 
       // Отправляем запрос на отправку кода подтверждения
-      const response = await fetch('https://n8n.bitcoinlimb.com/webhook/change-password-request-irfit', {
+      const response = await fetch('https://n8n.bitcoinlimb.com/webhook/change-password-request-psyhologovo', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -106,8 +106,10 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onBack }) => {
       </div>
 
       {/* Информация о пользователе */}
-      <div className={`mb-6 p-4 rounded-xl ${
-        isDark ? 'bg-gray-700/50' : 'bg-gray-50'
+      <div className={`mb-6 p-4 rounded-xl shadow-lg transition-all duration-300 hover:scale-105 ${
+        isDark 
+          ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+          : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
       }`}>
         <div className="flex items-center space-x-3 mb-3">
           <User className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
@@ -124,8 +126,10 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onBack }) => {
       </div>
 
       {/* Настройки аватара */}
-      <div className={`mb-6 rounded-xl p-6 transition-colors duration-300 ${
-        isDark ? 'bg-gray-800' : 'bg-white'
+      <div className={`mb-6 rounded-xl p-6 shadow-lg transition-all duration-300 hover:scale-105 ${
+        isDark 
+          ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+          : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
       }`}>
         <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>
           Настройки аватара
@@ -143,7 +147,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onBack }) => {
             <button 
               onClick={() => alert('Функция в разработке. Скоро вы сможете выбрать аватар или загрузить свое фото!')}
               className={`px-4 py-2 rounded-lg text-sm ${
-                isDark ? 'bg-[#94c356] text-white hover:bg-[#7ba045]' : 'bg-[#94c356] text-white hover:bg-[#7ba045]'
+                isDark ? 'bg-psyhologovo-500 text-white hover:bg-psyhologovo-600' : 'bg-psyhologovo-500 text-white hover:bg-psyhologovo-600'
               } transition-colors`}
             >
               Изменить аватар
@@ -153,8 +157,10 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onBack }) => {
       </div>
 
       {/* Изменение пароля */}
-      <div className={`rounded-xl p-6 transition-colors duration-300 ${
-        isDark ? 'bg-gray-800' : 'bg-white'
+      <div className={`rounded-xl p-6 shadow-lg transition-all duration-300 hover:scale-105 ${
+        isDark 
+          ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+          : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
       }`}>
         <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'}`}>
           Изменить пароль
@@ -167,7 +173,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onBack }) => {
           {message && (
             <div className={`p-3 rounded-lg text-sm text-center ${
               messageType === 'success' 
-                ? (isDark ? 'bg-green-900/50 text-green-300' : 'bg-green-50 text-green-600')
+                ? (isDark ? 'bg-psyhologovo-900/50 text-psyhologovo-300' : 'bg-psyhologovo-50 text-psyhologovo-600')
                 : (isDark ? 'bg-red-900/50 text-red-300' : 'bg-red-50 text-red-600')
             }`}>
               {message}
@@ -177,7 +183,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ user, onBack }) => {
           <button
             onClick={handleChangePassword}
             disabled={isLoading}
-            className="w-full px-4 py-3 bg-gradient-to-r from-[#94c356] to-[#7ba045] text-white rounded-xl font-medium hover:shadow-lg transition-all hover:from-[#7ba045] hover:to-[#94c356] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+            className="w-full px-4 py-3 bg-gradient-to-r from-psyhologovo-500 to-psyhologovo-700 text-white rounded-xl font-medium hover:shadow-lg transition-all hover:from-psyhologovo-600 hover:to-psyhologovo-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
           >
             <Lock className="w-5 h-5" />
             <span>{isLoading ? 'Отправка кода...' : 'Отправить код подтверждения'}</span>

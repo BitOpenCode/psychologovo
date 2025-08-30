@@ -69,7 +69,7 @@ const EventsList: React.FC<EventsListProps> = ({ onEditEvent, onDeleteEvent }) =
               } catch (error) {
           console.error('Ошибка загрузки событий:', error);
           if (error instanceof Error && error.message === 'Пользователь не авторизован') {
-            setError('Для просмотра событий необходимо зарегистрироваться или войти в аккаунт');
+            setError('Событий в этом месяце нет');
           } else if (error instanceof Error && error.message.includes('401')) {
             setError('Ошибка авторизации. Попробуйте войти заново');
           } else {

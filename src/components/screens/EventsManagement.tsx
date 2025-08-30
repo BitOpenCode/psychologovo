@@ -25,7 +25,7 @@ const EventsManagement: React.FC<EventsManagementProps> = ({ onBack, isDark }) =
     try {
       setIsLoading(true);
       
-      const token = localStorage.getItem('irfit_token');
+      const token = localStorage.getItem('psyhologovo_token');
       if (!token) {
         alert('Ошибка: пользователь не авторизован');
         return;
@@ -87,7 +87,7 @@ const EventsManagement: React.FC<EventsManagementProps> = ({ onBack, isDark }) =
     try {
       setIsLoading(true);
       
-      const token = localStorage.getItem('irfit_token');
+      const token = localStorage.getItem('psyhologovo_token');
       if (!token) {
         alert('Ошибка: пользователь не авторизован');
         return;
@@ -153,18 +153,18 @@ const EventsManagement: React.FC<EventsManagementProps> = ({ onBack, isDark }) =
   }, [showEventForm]);
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
+    <div className={`min-h-screen ${isDark ? 'bg-gradient-to-br from-psyhologovo-dark-900 via-psyhologovo-dark-800 to-psyhologovo-dark-900 text-white' : 'bg-gradient-to-br from-psyhologovo-50 via-psyhologovo-100 to-psyhologovo-200 text-gray-900'}`}>
       {/* Header */}
-      <div className={`sticky top-0 z-10 ${isDark ? 'bg-gray-800' : 'bg-white'} border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+      <div className={`sticky top-0 z-10 ${isDark ? 'bg-psyhologovo-dark-900/80 backdrop-blur-md' : 'bg-white/80 backdrop-blur-md'} border-b ${isDark ? 'border-psyhologovo-dark-700' : 'border-psyhologovo-300'}`}>
         <div className="flex items-center justify-between p-4">
           <button
             onClick={onBack}
-            className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
+            className={`p-2 rounded-lg ${isDark ? 'hover:bg-psyhologovo-dark-700 text-psyhologovo-400' : 'hover:bg-psyhologovo-100 text-psyhologovo-600'} transition-colors`}
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-lg font-semibold">
-            Управление событиями
+          <h1 className={`text-lg font-semibold ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>
+            Управление сессиями
           </h1>
           <button
             onClick={() => setShowEventForm(true)}
@@ -172,7 +172,7 @@ const EventsManagement: React.FC<EventsManagementProps> = ({ onBack, isDark }) =
             className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2 ${
               isLoading 
                 ? 'bg-gray-400 cursor-not-allowed text-white' 
-                : 'bg-[#94c356] hover:bg-[#7ba045] text-white'
+                : 'bg-psyhologovo-500 hover:bg-psyhologovo-600 text-white shadow-md hover:shadow-lg'
             }`}
           >
             <Plus className="w-4 h-4" />
@@ -185,9 +185,9 @@ const EventsManagement: React.FC<EventsManagementProps> = ({ onBack, isDark }) =
       <div className="p-6 space-y-6">
         <div className="text-center mb-6">
           <div className="text-4xl mb-4">📅</div>
-          <h2 className="text-xl font-bold mb-2">Управление событиями</h2>
-          <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-            Создавайте, редактируйте и удаляйте события для пользователей
+          <h2 className={`text-xl font-bold mb-2 ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>Управление сессиями</h2>
+          <p className={`text-sm ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>
+            Создавайте, редактируйте и удаляйте сессии для пользователей
           </p>
         </div>
 

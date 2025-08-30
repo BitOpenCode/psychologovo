@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
-import { Calendar, Clock, Award, Users, Play, BookOpen } from 'lucide-react';
+import { Calendar, Clock, Award, Users, Play, BookOpen, Heart, Brain, Star } from 'lucide-react';
 import EventsList from '../EventsList';
 import CourseDetails from './CourseDetails';
 
@@ -20,77 +20,97 @@ const Courses: React.FC = () => {
     setSelectedCourse(null);
   };
 
-  const courses = [
+  const services = [
     {
       id: 1,
-      title: 'Эксперт восстановительного фитнеса',
-      duration: '9 месяцев',
-      type: 'Основной курс',
-      price: 'Диплом',
-      startDate: 'Сентябрь 2024',
-      description: 'Комплексная подготовка специалистов в области восстановительного фитнеса с получением диплома государственного образца.',
+      title: 'Сопровождение от команды Психологово',
+      duration: '3 месяца',
+      type: 'Комплексная программа',
+      price: '160 000 ₽',
+      startDate: 'В любое время',
+      description: 'Индивидуальная работа с командой психологов. 12 сессий с личным чатом 24/7, самостоятельными практиками и рассрочкой.',
       features: [
-        'Физическая реабилитация',
-        'Двигательная терапия',
-        'Современный фитнес',
-        'Медицинские случаи',
-        'Практические навыки'
+        'Личный чат 24/7',
+        'Есть рассрочка',
+        'Самостоятельные практики',
+        'Индивидуальный подход',
+        'Поддержка команды'
       ],
-      icon: Award
+      icon: Heart,
+      benefits: [
+        'Каждый член команды глубоко работает с определенной темой',
+        'Подбор специалиста под твой запрос',
+        'Супервизия каждые 2 недели',
+        'Общие ценности и видение процесса'
+      ]
     },
     {
       id: 2,
-      title: 'FFT Functional Future Training',
-      duration: '24 часа',
-      type: 'Интенсив',
-      price: 'Сертификат',
-      startDate: '15 октября 2024',
-      description: 'Интенсивный курс по функциональному тренингу будущего для повышения квалификации.',
+      title: 'Разовая консультация',
+      duration: '1-1.5 часа',
+      type: 'Точечная помощь',
+      price: '5 000 ₽',
+      startDate: 'В любое время',
+      description: 'Подойдет тем, кто хочет точечно разобрать один запрос или познакомиться с нашим подходом.',
       features: [
-        'Функциональные движения',
-        'Современные методики',
-        'Практические занятия',
-        'Сертификация'
+        'Точечное решение проблемы',
+        'Знакомство с подходом',
+        'Быстрый результат',
+        'Конкретная помощь'
       ],
-      icon: Play
+      icon: Brain,
+      benefits: [
+        'Помогает увидеть ситуацию в целом',
+        'Осознать назревшие цели и задачи',
+        'Понять, что мешает реализации',
+        'Найти внутренние и внешние ресурсы'
+      ]
     },
     {
       id: 3,
-      title: 'Функциональная диагностика ОДА',
-      duration: '24 часа',
-      type: 'Интенсив',
-      price: 'Сертификат',
-      startDate: '15 октября 2024',
-      description: 'Специализированный курс по диагностике опорно-двигательного аппарата.',
+      title: 'Тройничок',
+      duration: '3 месяца',
+      type: 'Авторская программа',
+      price: '270 000 ₽',
+      startDate: 'В любое время',
+      description: 'Уникальный терапевтический опыт с двумя психологами одновременно. Каждую неделю новая тема для работы.',
       features: [
-        'Диагностические методы',
-        'Оценка состояния ОДА',
-        'Практические навыки',
-        'Работа с клиентами'
+        'Два психолога одновременно',
+        'Авторская программа',
+        'Максимальная поддержка',
+        'Индивидуальный чат на троих'
       ],
-      icon: BookOpen
+      icon: Star,
+      benefits: [
+        'Две пары мозгов - минимум слепых зон',
+        'Мужское и женское видение',
+        'Мягкость и прямолинейность',
+        'Рациональное и иррациональное'
+      ]
     },
     {
       id: 4,
-      title: 'Анатомия для тренера',
-      duration: '35 часов',
-      type: 'Интенсив',
-      price: 'Сертификат',
-      startDate: '15 октября 2024',
-      description: 'Углубленное изучение анатомии для профессиональных тренеров.',
+      title: 'Консультация с основателями',
+      duration: '1 час',
+      type: 'Премиум',
+      price: '10 000 ₽',
+      startDate: 'В любое время',
+      description: 'Сессия с основателями центра Иваном и Светланой Бобровыми. Создатели авторской методики краткосрочной работы с травмами.',
       features: [
-        'Детальная анатомия',
-        'Функциональные связи',
-        'Практическое применение',
-        'Клинические случаи'
+        'Опыт 1000+ положительных отзывов',
+        'Авторские методики',
+        'Международный опыт',
+        'Психологи выездных ретритов'
       ],
-      icon: Users
+      icon: Users,
+      benefits: [
+        'Частная практика с 2018 года',
+        'Коучи ICF и ICU',
+        'Гипнотерапия и психосоматика',
+        'Опыт работы на Мальдивах, Бали, в Таиланде'
+      ]
     }
   ];
-
-
-
-
 
   // Если выбран курс, показываем детальный экран
   if (selectedCourse) {
@@ -106,40 +126,40 @@ const Courses: React.FC = () => {
     <div className="max-w-md mx-auto px-4 py-6 md:max-w-4xl">
       {/* Header Section */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-3 bg-gradient-to-r from-[#94c356] to-[#7ba045] bg-clip-text text-transparent">
-          Образовательные программы
+        <h1 className="text-3xl font-bold mb-3 bg-gradient-to-r from-psyhologovo-500 to-psyhologovo-700 bg-clip-text text-transparent">
+          Наши услуги
         </h1>
         <p className={`text-lg ${
           isDark ? 'text-gray-300' : 'text-gray-700'
         }`}>
-          Профессиональное обучение в области восстановительного фитнеса
+          Индивидуальная работа без долгой диагностики и воды
         </p>
       </div>
 
-      {/* Courses Grid */}
+      {/* Services Grid */}
       <div className="mb-12">
-        <h2 className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-[#94c356] to-[#7ba045] bg-clip-text text-transparent">
-          Наши курсы
+        <h2 className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-psyhologovo-500 to-psyhologovo-700 bg-clip-text text-transparent">
+          Психологические услуги
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {courses.map((course) => {
-            const Icon = course.icon;
+          {services.map((service) => {
+            const Icon = service.icon;
             return (
-              <div key={course.id} className={`p-6 rounded-xl shadow-lg transition-all duration-300 hover:scale-105 ${
+              <div key={service.id} className={`p-6 rounded-xl shadow-lg transition-all duration-300 hover:scale-105 ${
                 isDark 
-                  ? 'bg-gray-800 border border-gray-700 hover:border-[#94c356]' 
-                  : 'bg-white border border-gray-200 hover:border-[#94c356] shadow-xl'
+                  ? 'bg-psyhologovo-dark-800 border border-psyhologovo-dark-700 hover:border-psyhologovo-500' 
+                  : 'bg-white border border-gray-200 hover:border-psyhologovo-500 shadow-xl'
               }`}>
                 <div className="flex items-center mb-4">
-                  <div className="p-3 rounded-lg bg-[#94c356]/10 dark:bg-[#94c356]/20 mr-4">
-                    <Icon className="w-6 h-6 text-[#94c356]" />
+                  <div className="p-3 rounded-lg bg-psyhologovo-500/10 dark:bg-psyhologovo-500/20 mr-4">
+                    <Icon className="w-6 h-6 text-psyhologovo-500" />
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-gray-800 dark:text-white">
-                      {course.title}
+                      {service.title}
                     </h3>
-                    <span className="text-sm text-[#94c356] font-medium">
-                      {course.type}
+                    <span className="text-sm text-psyhologovo-500 font-medium">
+                      {service.type}
                     </span>
                   </div>
                 </div>
@@ -147,7 +167,7 @@ const Courses: React.FC = () => {
                 <p className={`text-sm mb-4 leading-relaxed ${
                   isDark ? 'text-gray-300' : 'text-gray-600'
                 }`}>
-                  {course.description}
+                  {service.description}
                 </p>
                 
                 <div className="grid grid-cols-2 gap-4 mb-4">
@@ -156,7 +176,7 @@ const Courses: React.FC = () => {
                     <span className={`text-sm ${
                       isDark ? 'text-gray-400' : 'text-gray-600'
                     }`}>
-                      {course.duration}
+                      {service.duration}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -164,21 +184,21 @@ const Courses: React.FC = () => {
                     <span className={`text-sm ${
                       isDark ? 'text-gray-400' : 'text-gray-600'
                     }`}>
-                      {course.startDate}
+                      {service.startDate}
                     </span>
                   </div>
                 </div>
                 
                 <div className="mb-4">
-                  <span className="inline-block px-3 py-1 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 text-sm font-medium rounded-full">
-                    {course.price}
+                  <span className="inline-block px-3 py-1 bg-psyhologovo-100 text-psyhologovo-800 dark:bg-psyhologovo-900/30 dark:text-psyhologovo-400 text-sm font-medium rounded-full">
+                    {service.price}
                   </span>
                 </div>
                 
-                <div className="space-y-2">
-                  {course.features.slice(0, 3).map((feature, index) => (
+                <div className="space-y-2 mb-4">
+                  {service.features.slice(0, 3).map((feature, index) => (
                     <div key={index} className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-[#94c356] rounded-full"></div>
+                      <div className="w-2 h-2 bg-psyhologovo-500 rounded-full"></div>
                       <span className={`text-sm ${
                         isDark ? 'text-gray-400' : 'text-gray-600'
                       }`}>
@@ -189,11 +209,11 @@ const Courses: React.FC = () => {
                 </div>
                 
                 <button 
-                  onClick={() => handleCourseSelect(course.id)}
+                  onClick={() => handleCourseSelect(service.id)}
                   className={`w-full mt-4 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                     isDark
-                      ? 'bg-[#94c356] hover:bg-[#7ba045] text-white'
-                      : 'bg-[#94c356] hover:bg-[#7ba045] text-white'
+                      ? 'bg-psyhologovo-500 hover:bg-psyhologovo-600 text-white'
+                      : 'bg-psyhologovo-500 hover:bg-psyhologovo-600 text-white'
                   }`}>
                   Подробнее
                 </button>
@@ -203,14 +223,62 @@ const Courses: React.FC = () => {
         </div>
       </div>
 
+      {/* Why Choose Us */}
+      <div className={`p-6 rounded-2xl mb-8 ${
+        isDark 
+          ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+          : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
+      }`}>
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-psyhologovo-600">
+            Почему выбирают нас?
+          </h2>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-start space-x-3">
+            <div className="w-2 h-2 bg-psyhologovo-500 rounded-full mt-2 flex-shrink-0"></div>
+            <span className={`text-sm leading-relaxed ${
+              isDark ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+              Мы сами были клиентами у наших психологов и прочувствовали результаты терапии на себе
+            </span>
+          </div>
+          <div className="flex items-start space-x-3">
+            <div className="w-2 h-2 bg-psyhologovo-500 rounded-full mt-2 flex-shrink-0"></div>
+            <span className={`text-sm leading-relaxed ${
+              isDark ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+              Каждые 2 недели психологи проходят супервизию у Светланы и Ивана Бобровых
+            </span>
+          </div>
+          <div className="flex items-start space-x-3">
+            <div className="w-2 h-2 bg-psyhologovo-500 rounded-full mt-2 flex-shrink-0"></div>
+            <span className={`text-sm leading-relaxed ${
+              isDark ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+              У нас общие ценности и видение терапевтического процесса
+            </span>
+          </div>
+          <div className="flex items-start space-x-3">
+            <div className="w-2 h-2 bg-psyhologovo-500 rounded-full mt-2 flex-shrink-0"></div>
+            <span className={`text-sm leading-relaxed ${
+              isDark ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+              Мы не ждем, пока у вас появятся проблемы - помогаем стать сильнее уже сейчас
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Upcoming Events */}
       <div className={`p-6 rounded-2xl ${
         isDark 
-          ? 'bg-gradient-to-r from-orange-900/50 to-red-900/50 border border-orange-700' 
-          : 'bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200'
+          ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+          : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
       }`}>
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-orange-600">
+          <h2 className="text-2xl font-bold text-psyhologovo-600">
             Ближайшие события
           </h2>
         </div>

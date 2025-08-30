@@ -206,11 +206,11 @@ const AnonymousQuestions: React.FC<AnonymousQuestionsProps> = ({ onBack, isDark 
 
   if (isLoadingData) {
     return (
-      <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
+      <div className={`min-h-screen ${isDark ? 'bg-gradient-to-br from-psyhologovo-dark-900 via-psyhologovo-dark-800 to-psyhologovo-dark-900 text-white' : 'bg-gradient-to-br from-psyhologovo-50 via-psyhologovo-100 to-psyhologovo-200 text-gray-900'}`}>
         <div className="flex items-center justify-center h-screen">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-psyhologovo-500 mb-4"></div>
-            <p>Загрузка анонимных вопросов...</p>
+            <p className={isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}>Загрузка анонимных вопросов...</p>
           </div>
         </div>
       </div>
@@ -218,23 +218,23 @@ const AnonymousQuestions: React.FC<AnonymousQuestionsProps> = ({ onBack, isDark 
   }
 
   return (
-    <div className={`min-h-screen ${isDark ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
+    <div className={`min-h-screen ${isDark ? 'bg-gradient-to-br from-psyhologovo-dark-900 via-psyhologovo-dark-800 to-psyhologovo-dark-900 text-white' : 'bg-gradient-to-br from-psyhologovo-50 via-psyhologovo-100 to-psyhologovo-200 text-gray-900'}`}>
       {/* Header */}
-      <div className={`sticky top-0 z-10 ${isDark ? 'bg-gray-800' : 'bg-white'} border-b ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
+      <div className={`sticky top-0 z-10 ${isDark ? 'bg-psyhologovo-dark-900/80 backdrop-blur-md' : 'bg-white/80 backdrop-blur-md'} border-b ${isDark ? 'border-psyhologovo-dark-700' : 'border-psyhologovo-300'}`}>
         <div className="flex items-center justify-between p-4">
           <button
             onClick={onBack}
-            className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
+            className={`p-2 rounded-lg ${isDark ? 'hover:bg-psyhologovo-dark-700 text-psyhologovo-400' : 'hover:bg-psyhologovo-100 text-psyhologovo-600'} transition-colors`}
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-lg font-semibold">
+          <h1 className={`text-lg font-semibold ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>
             Анонимные вопросы пользователей
           </h1>
                       <button
               onClick={fetchAnonymousQuestions}
             disabled={isLoadingData}
-            className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors disabled:opacity-50`}
+            className={`p-2 rounded-lg ${isDark ? 'hover:bg-psyhologovo-dark-700 text-psyhologovo-400' : 'hover:bg-psyhologovo-100 text-psyhologovo-600'} transition-colors disabled:opacity-50`}
             title="Обновить данные"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,8 +248,8 @@ const AnonymousQuestions: React.FC<AnonymousQuestionsProps> = ({ onBack, isDark 
       <div className="p-6 space-y-6">
         <div className="text-center mb-6">
           <div className="text-4xl mb-4">❓</div>
-          <h2 className="text-xl font-bold mb-2">Анонимные вопросы пользователей</h2>
-          <p className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+          <h2 className={`text-xl font-bold mb-2 ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>Анонимные вопросы пользователей</h2>
+          <p className={`text-sm ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>
             Просмотрите и ответьте на анонимные вопросы от пользователей
           </p>
         </div>
@@ -260,8 +260,8 @@ const AnonymousQuestions: React.FC<AnonymousQuestionsProps> = ({ onBack, isDark 
             <div className="flex items-start space-x-3">
               <div className="text-red-600 text-lg">❌</div>
               <div>
-                <h4 className="font-semibold text-red-800 mb-1">Ошибка</h4>
-                <p className="text-sm text-red-700">{error}</p>
+                <h4 className={`font-semibold mb-1 ${isDark ? 'text-red-400' : 'text-red-800'}`}>Ошибка</h4>
+                <p className={`text-sm ${isDark ? 'text-red-300' : 'text-red-700'}`}>{error}</p>
               </div>
             </div>
           </div>
@@ -271,18 +271,18 @@ const AnonymousQuestions: React.FC<AnonymousQuestionsProps> = ({ onBack, isDark 
           {questions.map((question) => (
             <div
               key={question.id}
-              className={`rounded-xl p-4 ${isDark ? 'bg-gray-800' : 'bg-white'} shadow-sm border ${
-                isDark ? 'border-gray-700' : 'border-gray-200'
-              }`}
+              className={`rounded-xl p-4 ${isDark ? 'bg-psyhologovo-dark-800/50' : 'bg-white'} shadow-sm border ${
+                isDark ? 'border-psyhologovo-dark-600' : 'border-psyhologovo-200'
+              } transition-all duration-300 hover:shadow-md`}
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center space-x-3">
-                  <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center`}>
+                  <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-psyhologovo-dark-700' : 'bg-psyhologovo-100'} flex items-center justify-center`}>
                     <UserPlus className="w-5 h-5 text-psyhologovo-500" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">{question.user_name}</h3>
-                    <div className="flex items-center space-x-2 text-sm text-gray-500">
+                    <h3 className={`font-semibold text-lg ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>{question.user_name}</h3>
+                    <div className="flex items-center space-x-2 text-sm text-psyhologovo-500">
                       <Mail className="w-4 h-4" />
                       <span>{question.user_email}</span>
                     </div>
@@ -295,12 +295,12 @@ const AnonymousQuestions: React.FC<AnonymousQuestionsProps> = ({ onBack, isDark 
 
               {/* Вопрос пользователя */}
               {question.question_message && (
-                <div className="mb-3 p-3 bg-gray-50 rounded-lg">
+                <div className={`mb-3 p-3 rounded-lg ${isDark ? 'bg-psyhologovo-dark-700/50' : 'bg-psyhologovo-50'}`}>
                   <div className="flex items-start space-x-2">
-                    <MessageSquare className="w-4 h-4 text-gray-400 mt-0.5" />
+                    <MessageSquare className={`w-4 h-4 ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-500'} mt-0.5`} />
                     <div>
-                      <div className="text-xs text-gray-500 mb-1">Вопрос пользователя:</div>
-                      <p className={`text-sm ${isDark ? 'text-gray-900' : 'text-gray-900'}`}>{question.question_message}</p>
+                      <div className={`text-xs mb-1 ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>Вопрос пользователя:</div>
+                      <p className={`text-sm ${isDark ? 'text-psyhologovo-100' : 'text-psyhologovo-800'}`}>{question.question_message}</p>
                     </div>
                   </div>
                 </div>
@@ -308,13 +308,13 @@ const AnonymousQuestions: React.FC<AnonymousQuestionsProps> = ({ onBack, isDark 
 
               {/* Ответ администратора */}
               {question.admin_answer && (
-                <div className="mb-3 p-3 bg-blue-50 rounded-lg">
-                  <div className="text-xs text-blue-600 mb-1">Ответ администратора:</div>
-                  <p className="text-sm text-blue-800">{question.admin_answer}</p>
+                <div className={`mb-3 p-3 rounded-lg ${isDark ? 'bg-psyhologovo-500/20' : 'bg-psyhologovo-100'}`}>
+                  <div className={`text-xs mb-1 ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>Ответ администратора:</div>
+                  <p className={`text-sm ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>{question.admin_answer}</p>
                 </div>
               )}
 
-              <div className="flex items-center space-x-2 text-sm text-gray-500 mb-4">
+              <div className="flex items-center space-x-2 text-sm text-psyhologovo-500 mb-4">
                 <Calendar className="w-4 h-4" />
                 <span>Вопрос задан: {formatDate(question.created_at)}</span>
               </div>
@@ -324,7 +324,7 @@ const AnonymousQuestions: React.FC<AnonymousQuestionsProps> = ({ onBack, isDark 
                   <button
                     onClick={() => handleAnswer(question.id)}
                     disabled={isLoading}
-                    className="flex-1 px-4 py-2 bg-psyhologovo-500 hover:bg-psyhologovo-600 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
+                    className="flex-1 px-4 py-2 bg-psyhologovo-500 hover:bg-psyhologovo-600 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center space-x-2 shadow-md hover:shadow-lg"
                   >
                     <CheckCircle className="w-4 h-4" />
                     <span>Ответить</span>
@@ -332,7 +332,7 @@ const AnonymousQuestions: React.FC<AnonymousQuestionsProps> = ({ onBack, isDark 
                   <button
                     onClick={() => handleArchive(question.id)}
                     disabled={isLoading}
-                    className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
+                    className="flex-1 px-4 py-2 bg-psyhologovo-600 hover:bg-psyhologovo-700 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center space-x-2 shadow-md hover:shadow-lg"
                   >
                     <XCircle className="w-4 h-4" />
                     <span>Архивировать</span>
@@ -342,8 +342,8 @@ const AnonymousQuestions: React.FC<AnonymousQuestionsProps> = ({ onBack, isDark 
 
               {/* Информация об обработке */}
               {question.status !== 'pending' && question.answered_at && (
-                <div className="mt-3 pt-3 border-t border-gray-200">
-                  <div className="text-xs text-gray-500">
+                <div className={`mt-3 pt-3 border-t ${isDark ? 'border-psyhologovo-dark-600' : 'border-psyhologovo-200'}`}>
+                  <div className={`text-xs ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-500'}`}>
                     Обработано: {formatDate(question.answered_at)}
                   </div>
                 </div>
@@ -352,10 +352,10 @@ const AnonymousQuestions: React.FC<AnonymousQuestionsProps> = ({ onBack, isDark 
           ))}
 
           {questions.length === 0 && (
-            <div className={`text-center py-12 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+            <div className={`text-center py-12 ${isDark ? 'text-psyhologovo-400' : 'text-psyhologovo-500'}`}>
               <div className="text-6xl mb-4">📭</div>
-              <p className="text-lg">Нет активных вопросов</p>
-              <p className="text-sm">Все анонимные вопросы обработаны</p>
+              <p className={`text-lg ${isDark ? 'text-psyhologovo-200' : 'text-psyhologovo-700'}`}>Нет активных вопросов</p>
+              <p className={`text-sm ${isDark ? 'text-psyhologovo-300' : 'text-psyhologovo-600'}`}>Все анонимные вопросы обработаны</p>
             </div>
           )}
         </div>

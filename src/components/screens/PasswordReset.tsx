@@ -112,18 +112,7 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ onBack }) => {
     }
   };
 
-  // Функция для очистки всех полей при возврате
-  const handleGoBack = () => {
-    setCurrentStep('email');
-    setError('');
-    setResetCode('');
-    setNewPassword('');
-    setConfirmPassword('');
-    setCodeError('');
-    setPasswordError('');
-    setConfirmPasswordError('');
-    setTimeLeft(15 * 60);
-  };
+
 
   // Объединенная функция для установки пароля
   const handlePasswordReset = async (e: React.FormEvent) => {
@@ -215,16 +204,18 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ onBack }) => {
   // Рендерим этап ввода пароля
   if (currentStep === 'new-password') {
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-        <div className={`w-full max-w-md p-8 rounded-2xl shadow-2xl ${
-          isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+      <div className="max-w-md mx-auto px-4 py-6 md:max-w-lg transition-colors duration-300">
+        <div className={`w-full p-8 rounded-2xl shadow-2xl transition-all duration-300 hover:scale-105 ${
+          isDark 
+            ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+            : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
         }`}>
           {/* Заголовок */}
           <div className="text-center mb-8">
             <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
-              isDark ? 'bg-[#94c356]/20' : 'bg-[#94c356]/10'
+              isDark ? 'bg-psyhologovo-500/20' : 'bg-psyhologovo-500/10'
             }`}>
-              <Lock className="w-8 h-8 text-[#94c356]" />
+              <Lock className="w-8 h-8 text-psyhologovo-500" />
             </div>
             <h1 className={`text-2xl font-bold mb-2 ${
               isDark ? 'text-white' : 'text-gray-800'
@@ -236,8 +227,8 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ onBack }) => {
             }`}>
               Введите код и новый пароль
             </p>
-            <p className={`text-sm font-medium text-[#94c356] ${
-              isDark ? 'text-[#94c356]' : 'text-[#7ba045]'
+            <p className={`text-sm font-medium text-psyhologovo-500 ${
+              isDark ? 'text-psyhologovo-500' : 'text-psyhologovo-600'
             }`}>
               {email}
             </p>
@@ -267,9 +258,9 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ onBack }) => {
                 onChange={(e) => setResetCode(e.target.value)}
                 placeholder="000000"
                 maxLength={6}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#94c356] focus:border-transparent transition-all text-center text-xl font-mono tracking-widest ${
+                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent transition-all text-center text-xl font-mono tracking-widest ${
                   isDark 
-                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                    ? 'bg-psyhologovo-800/30 border-psyhologovo-600 text-white placeholder-gray-400' 
                     : 'bg-white border-gray-300 text-gray-800 placeholder-gray-400'
                 }`}
               />
@@ -295,9 +286,9 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ onBack }) => {
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-[#94c356] focus:border-transparent transition-all ${
+                  className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent transition-all ${
                     isDark 
-                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                      ? 'bg-psyhologovo-800/30 border-psyhologovo-600 text-white placeholder-gray-400' 
                       : 'bg-white border-gray-300 text-gray-800 placeholder-gray-400'
                   }`}
                   placeholder="Минимум 6 символов"
@@ -335,9 +326,9 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ onBack }) => {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-[#94c356] focus:border-transparent transition-all ${
+                  className={`w-full px-4 py-3 pr-12 border rounded-xl focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent transition-all ${
                     isDark 
-                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                      ? 'bg-psyhologovo-800/30 border-psyhologovo-600 text-white placeholder-gray-400' 
                       : 'bg-white border-gray-300 text-gray-800 placeholder-gray-400'
                   }`}
                   placeholder="Повторите пароль"
@@ -364,32 +355,19 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ onBack }) => {
 
             {/* Ошибка уже показывается в заголовке */}
 
-            {/* Кнопки */}
-            <div className="space-y-3">
-              <button
-                type="submit"
-                disabled={isLoading || !resetCode.trim() || !newPassword.trim() || !confirmPassword.trim()}
-                className="w-full px-4 py-3 bg-gradient-to-r from-[#94c356] to-[#7ba045] text-white rounded-xl font-medium hover:shadow-lg transition-all hover:from-[#7ba045] hover:to-[#94c356] disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? 'Обновление...' : 'Подтвердить новый пароль'}
-              </button>
-              
-              <button
-                type="button"
-                onClick={handleGoBack}
-                className={`w-full px-4 py-3 text-sm ${
-                  isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-700'
-                } hover:underline transition-colors flex items-center justify-center space-x-2`}
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Вернуться к восстановлению</span>
-              </button>
-            </div>
+            {/* Кнопка подтверждения */}
+            <button
+              type="submit"
+              disabled={isLoading || !resetCode.trim() || !newPassword.trim() || !confirmPassword.trim()}
+              className="w-full px-4 py-3 bg-gradient-to-r from-psyhologovo-500 to-psyhologovo-700 text-white rounded-xl font-medium hover:shadow-lg transition-all hover:from-psyhologovo-600 hover:to-psyhologovo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? 'Обновление...' : 'Подтвердить новый пароль'}
+            </button>
           </form>
 
           {/* Таймер и кнопка повторной отправки */}
           <div className={`mt-6 p-3 rounded-lg text-xs text-center ${
-            isDark ? 'bg-gray-700/50 text-gray-400' : 'bg-gray-50 text-gray-500'
+            isDark ? 'bg-psyhologovo-800/30 text-psyhologovo-300' : 'bg-psyhologovo-50 text-psyhologovo-600'
           }`}>
             {timeLeft > 0 ? (
               <div className="space-y-2">
@@ -399,7 +377,7 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ onBack }) => {
                     type="button"
                     onClick={handleSubmit}
                     className={`px-4 py-2 rounded-lg text-sm ${
-                      isDark ? 'bg-[#94c356] text-white hover:bg-[#7ba045]' : 'bg-[#94c356] text-white hover:bg-[#7ba045]'
+                      isDark ? 'bg-psyhologovo-500 text-white hover:bg-psyhologovo-600' : 'bg-psyhologovo-500 text-white hover:bg-psyhologovo-600'
                     } transition-colors`}
                   >
                     Отправить код повторно
@@ -413,13 +391,24 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ onBack }) => {
                   type="button"
                   onClick={handleSubmit}
                   className={`px-4 py-2 rounded-lg text-sm ${
-                    isDark ? 'bg-[#94c356] text-white hover:bg-[#7ba045]' : 'bg-[#94c356] text-white hover:bg-[#7ba045]'
+                    isDark ? 'bg-psyhologovo-500 text-white hover:bg-psyhologovo-600' : 'bg-psyhologovo-500 text-white hover:bg-psyhologovo-600'
                   } transition-colors`}
                 >
                   Отправить новый код
                 </button>
               </div>
             )}
+            <div className="mt-3 pt-2 border-t border-current border-opacity-20">
+              <button
+                onClick={onBack}
+                className={`inline-flex items-center space-x-1 text-xs hover:underline transition-colors ${
+                  isDark ? 'text-psyhologovo-200 hover:text-psyhologovo-100' : 'text-psyhologovo-500 hover:text-psyhologovo-600'
+                }`}
+              >
+                <ArrowLeft className="w-3 h-3" />
+                <span>Вернуться к восстановлению</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -428,16 +417,18 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ onBack }) => {
 
   if (isSuccess) {
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-        <div className={`w-full max-w-md p-8 rounded-2xl shadow-2xl ${
-          isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+      <div className="max-w-md mx-auto px-4 py-6 md:max-w-lg transition-colors duration-300">
+        <div className={`w-full p-8 rounded-2xl shadow-2xl transition-all duration-300 hover:scale-105 ${
+          isDark 
+            ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+            : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
         }`}>
-          {/* Успешное изменение пароля */}
+          {/* Заголовок */}
           <div className="text-center mb-8">
             <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
-              isDark ? 'bg-[#94c356]/20' : 'bg-[#94c356]/10'
+              isDark ? 'bg-psyhologovo-500/20' : 'bg-psyhologovo-500/10'
             }`}>
-              <Lock className="w-8 h-8 text-[#94c356]" />
+              <Lock className="w-8 h-8 text-psyhologovo-500" />
             </div>
             <h1 className={`text-2xl font-bold mb-2 ${
               isDark ? 'text-white' : 'text-gray-800'
@@ -456,29 +447,45 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ onBack }) => {
             </p>
           </div>
 
-          {/* Кнопка возврата */}
-          <button
-            onClick={onBack}
-            className="w-full px-4 py-3 bg-gradient-to-r from-[#94c356] to-[#7ba045] text-white rounded-xl font-medium hover:shadow-lg transition-all hover:from-[#7ba045] hover:to-[#94c356]"
-          >
-            Вернуться к входу сейчас
-          </button>
+          {/* Кнопки */}
+          <div className="space-y-3">
+            <button
+              onClick={onBack}
+              className="w-full px-4 py-3 bg-gradient-to-r from-psyhologovo-500 to-psyhologovo-700 text-white rounded-xl font-medium hover:shadow-lg transition-all hover:from-psyhologovo-600 hover:to-psyhologovo-500"
+            >
+              Вернуться к входу сейчас
+            </button>
+            
+            <div className="text-center">
+              <button
+                onClick={onBack}
+                className={`inline-flex items-center space-x-1 text-xs hover:underline transition-colors ${
+                  isDark ? 'text-psyhologovo-200 hover:text-psyhologovo-100' : 'text-psyhologovo-500 hover:text-psyhologovo-600'
+                }`}
+              >
+                <ArrowLeft className="w-3 h-3" />
+                <span>Вернуться к восстановлению</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className={`w-full max-w-md p-8 rounded-2xl shadow-2xl ${
-        isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+    <div className="max-w-md mx-auto px-4 py-6 md:max-w-lg transition-colors duration-300">
+      <div className={`w-full p-8 rounded-2xl shadow-2xl transition-all duration-300 hover:scale-105 ${
+        isDark 
+          ? 'bg-gradient-to-r from-psyhologovo-900/50 to-psyhologovo-800/50 border border-psyhologovo-700' 
+          : 'bg-gradient-to-r from-psyhologovo-100 to-psyhologovo-50 border border-psyhologovo-300'
       }`}>
         {/* Заголовок */}
         <div className="text-center mb-8">
           <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${
-            isDark ? 'bg-[#94c356]/20' : 'bg-[#94c356]/10'
+            isDark ? 'bg-psyhologovo-500/20' : 'bg-psyhologovo-500/10'
           }`}>
-            <Mail className="w-8 h-8 text-[#94c356]" />
+            <Mail className="w-8 h-8 text-psyhologovo-500" />
           </div>
           <h1 className={`text-2xl font-bold mb-2 ${
             isDark ? 'text-white' : 'text-gray-800'
@@ -506,9 +513,9 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ onBack }) => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#94c356] focus:border-transparent transition-all ${
+              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-psyhologovo-500 focus:border-transparent transition-all ${
                 isDark 
-                  ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
+                  ? 'bg-psyhologovo-800/30 border-psyhologovo-600 text-white placeholder-gray-400' 
                   : 'bg-white border-gray-300 text-gray-800 placeholder-gray-400'
               }`}
               placeholder="Введите ваш email"
@@ -524,34 +531,34 @@ const PasswordReset: React.FC<PasswordResetProps> = ({ onBack }) => {
             </div>
           )}
 
-          {/* Кнопки */}
-          <div className="space-y-3">
-            <button
-              type="submit"
-              disabled={isLoading || !email.trim()}
-              className="w-full px-4 py-3 bg-gradient-to-r from-[#94c356] to-[#7ba045] text-white rounded-xl font-medium hover:shadow-lg transition-all hover:from-[#7ba045] hover:to-[#94c356] disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? 'Отправка...' : 'Отправить код восстановления'}
-            </button>
-            
-            <button
-              type="button"
-              onClick={onBack}
-              className={`w-full px-4 py-3 text-sm ${
-                isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-700'
-              } hover:underline transition-colors flex items-center justify-center space-x-2`}
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Вернуться к входу</span>
-            </button>
-          </div>
+          {/* Кнопка отправки */}
+          <button
+            type="submit"
+            disabled={isLoading || !email.trim()}
+            className="w-full px-4 py-3 bg-gradient-to-r from-psyhologovo-500 to-psyhologovo-700 text-white rounded-xl font-medium hover:shadow-lg transition-all hover:from-psyhologovo-600 hover:to-psyhologovo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? 'Отправка...' : 'Отправить код восстановления'}
+          </button>
         </form>
 
         {/* Подсказка */}
         <div className={`mt-6 p-3 rounded-lg text-xs text-center ${
-          isDark ? 'bg-gray-700/50 text-gray-400' : 'bg-gray-50 text-gray-500'
+          isDark ? 'bg-psyhologovo-800/30 text-psyhologovo-300' : 'bg-psyhologovo-50 text-psyhologovo-600'
         }`}>
           Код будет отправлен на указанный email
+        </div>
+
+        {/* Кнопка возврата */}
+        <div className="mt-3 text-center">
+          <button
+            onClick={onBack}
+            className={`inline-flex items-center space-x-1 text-xs hover:underline transition-colors ${
+              isDark ? 'text-psyhologovo-200 hover:text-psyhologovo-100' : 'text-psyhologovo-500 hover:text-psyhologovo-600'
+            }`}
+          >
+            <ArrowLeft className="w-3 h-3" />
+            <span>Вернуться к входу</span>
+          </button>
         </div>
       </div>
     </div>
