@@ -4,7 +4,7 @@
 export const getStaticPath = (path: string): string => {
   // Если мы в GitHub Pages, добавляем имя репозитория
   if (window.location.hostname === 'bitopencode.github.io') {
-    return `/psyhologovo${path}`;
+    return `/psychologovo${path}`;
   }
   
   // Локально используем обычный путь
